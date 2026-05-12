@@ -1,0 +1,19 @@
+{
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    ".gitattributes": true,
+    "README.md": true,
+    "docs": true,
+    ".vscode": true
+  },
+  "hide-files.files": [
+    ".gitattributes",
+    "README.md",
+    "docs",
+    ".vscode"
+  ]
+}

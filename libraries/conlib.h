@@ -1,3 +1,6 @@
+#pragma once
+#include <vector>
+
 // class that contains all the functions
 // for the console management
 namespace ConLib {
@@ -45,6 +48,15 @@ namespace ConLib {
   // get width and height of the console
   int Width(void);
   int Height(void);
+
+
+  // INPUT FUNCTIONS
+  // gets all keyboard input that appeared
+  // std::vector<std::string> InputBuffer(void);
+
+  // removes all input from the buffer
+  // should be called after each input processing
+  // void ClearInput(void);
 
 
   // CURSOR FUNCTIONS
