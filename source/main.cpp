@@ -1,21 +1,34 @@
-#include <windows.h>
-#include <iostream>
 #include <conlib.h>
+#include "scene.h"
+#include "resources.h"
 
-namespace CL = ConLib;
+// definitions
+umap<string, uptr<Res>> Res::resources;
+Scene* Scene::sceneptr;
 
-int main() {
-  CL::Initialize();
-  CL::Resize(32, 16);
-  CL::NoResize();
-  CL::NoSelect();
-  for (int i = 0; i < 16; i++) {
-    for (int j = 0; j < 16; j++) {
-      CL::Put(i * 2, j, 'A' + i + j, i, j);
-      CL::Put(i * 2 + 1, j, 'A' + i + j, i, j);
-    }
+// constants
+const int FPS = 60;
+
+// main function
+int main()
+{
+  // initialize the console resources and scenes
+  cl::Initialize();
+  Res::LoadList("resources/list.res");
+  Scene::InitAll();
+  Scene::Switch("Menu");
+
+  // main loop
+  while (!cl::Pressed(cl::KEY_ESC))
+  {
+    // call current update function
+    Scene::UpdateCurrent();
+
+    // apply the buffer and delay
+    cl::ApplyBuffer();
+    cl::Sleep(1000 / FPS);
   }
-  CL::ApplyBuffer();
-  std::cin.get();
-  CL::Destroy();
+
+  // free the console data
+  cl::Destroy();
 }

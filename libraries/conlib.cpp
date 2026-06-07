@@ -78,7 +78,7 @@ void ConLib::FullScreen(bool enable)
     // removing window fancy styling
     SetWindowLongPtr(window, GWL_STYLE, WS_VISIBLE | WS_POPUP);
 
-    // Устанавливаем окно поверх всех и на весь экран
+    // set the window to be on top of all windows
     SetWindowPos(
       window,
       HWND_TOPMOST,
@@ -329,4 +329,14 @@ void ActualizeBufferSize(void)
   
   // set the buffer size
   SetConsoleScreenBufferSize(ohandle, bufsize);
+}
+
+// sleep for a certain amount of time
+void ConLib::Sleep(int ms) {
+  ::Sleep(ms);
+}
+
+// get pressed key
+bool ConLib::Pressed(int key) {
+  return GetAsyncKeyState(key) < 0;
 }

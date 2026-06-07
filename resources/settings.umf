@@ -1,0 +1,4 @@
+# windowed: 0, fullscreen: 1
+win.mode: 0
+win.width: 30
+win.height: 20

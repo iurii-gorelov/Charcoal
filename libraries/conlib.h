@@ -51,12 +51,16 @@ namespace ConLib {
 
 
   // INPUT FUNCTIONS
-  // gets all keyboard input that appeared
-  // std::vector<std::string> InputBuffer(void);
+  // checks if key is pressed
+  bool Pressed(int key);
 
-  // removes all input from the buffer
-  // should be called after each input processing
-  // void ClearInput(void);
+  // some keys
+  const int KEY_ESC = 0x1B;
+  const int KEY_ENTER = 0x0D;
+  const int KEY_LEFT = 0x25;
+  const int KEY_RIGHT = 0x27;
+  const int KEY_UP = 0x26;
+  const int KEY_DOWN = 0x28;
 
 
   // CURSOR FUNCTIONS
@@ -83,4 +87,12 @@ namespace ConLib {
 
   // loads font on users pc to be used in the console
   void InstallFont(const char* path);
+
+
+  // FRAMEWORK FUNCTIONS
+  // sleep for a certain amount of time
+  void Sleep(int ms);
 };
+
+// alias
+namespace cl = ConLib;
