@@ -89,7 +89,10 @@ static void Update(void)
   
   // write the text
   cl::Write("\f7NEW GAME",   bx + 3, by + 1);
-  cl::Write("\f7FULLSCREEN", bx + 3, by + 2);
+  if (cl::FullScreen()) 
+    cl::Write("\f7FULLSCREEN", bx + 3, by + 2);
+  else 
+    cl::Write("\f7WINDOWED", bx + 3, by + 2);
   cl::Write("\f7QUIT",       bx + 3, by + 3);
 
   // write the pointer
