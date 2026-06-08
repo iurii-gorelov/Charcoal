@@ -10,10 +10,12 @@ static HANDLE ohandle = 0;
 static HANDLE ihandle = 0;
 static HWND   window  = 0;
 static bool   noScrollBar = false;
+static bool isFullScreen = false;
 
 // buffer for the console
 COORD      bufsize = {0, 0};
 CHAR_INFO* buffer  = nullptr;
+CHAR_INFO trashbox;
 
 // input buffer
 std::vector<std::string> inputbuf;
@@ -52,12 +54,14 @@ void ConLib::Title(const char* title) {
   SetConsoleTitleA(title);
 }
 
+// return current fullscreen state
+bool ConLib::FullScreen(void) {
+  return isFullScreen;
+}
+
 // make the console fullscreen
 void ConLib::FullScreen(bool enable)
 {
-  // it defaults to be not fullscreen
-  static bool isFullScreen = false;
-
   // to save the window style
   static WINDOWPLACEMENT wp { sizeof(WINDOWPLACEMENT) };
   static LONG_PTR style = 0;
@@ -261,11 +265,26 @@ void ConLib::InstallFont(const char* path)
 }
 
 // put on buffer
-void ConLib::Put(int x, int y, unsigned char c, unsigned char fg, unsigned char bg) {
+void ConLib::Put(unsigned char c, int x, int y, unsigned char fg, unsigned char bg)
+{
+  // check the bounds and put the character
   if (x < 0 || x >= bufsize.X || y < 0 || y >= bufsize.Y)
     return;
   buffer[y * bufsize.X + x].Char.AsciiChar = c;
-  buffer[y * bufsize.X + x].Attributes = (fg & 0x0F) | ((bg & 0x0F) << 4);
+
+  // set the attributes (don't change if possible)
+  WORD& attr = buffer[y * bufsize.X + x].Attributes;
+  if (fg < 16)
+    attr = attr & 0xf0 | fg;
+  if (bg < 16)
+    attr = attr & 0x0f | (bg << 4);
+}
+
+// put attr
+unsigned short& ConLib::AttrAt(int x, int y) {
+  if (x < 0 || x >= bufsize.X || y < 0 || y >= bufsize.Y)
+    return trashbox.Attributes;
+  return buffer[y * bufsize.X + x].Attributes;
 }
 
 // applies buffer to the console
@@ -313,7 +332,7 @@ void ConLib::ColorTable(int table[16])
 }
 
 // should be called when the console is resized
-void ActualizeBufferSize(void)
+static void ActualizeBufferSize(void)
 {   
   // getting buffer info
   CONSOLE_SCREEN_BUFFER_INFO csbi;
@@ -339,4 +358,24 @@ void ConLib::Sleep(int ms) {
 // get pressed key
 bool ConLib::Pressed(int key) {
   return GetAsyncKeyState(key) < 0;
+}
+
+// write a text to the console (colored)
+void ConLib::Write(std::string text, int x, int y, int maxw) {
+  int fg = 0x07, bg = 0x00;
+  for (int i = 0, di = 0; i < text.length(); i++) {
+    if (text[i] == '\f')
+      i++, fg = text[i] >= '0' && text[i] <= '9' ? text[i] - '0' : text[i] - 'W';
+    else if (text[i] == '\b')
+      i++, bg = text[i] >= '0' && text[i] <= '9' ? text[i] - '0' : text[i] - 'W';
+    else
+      ConLib::Put(text[i], x + (di % maxw), y + (di / maxw), fg, bg), di++;
+  }
+}
+
+// call put on an area
+void ConLib::Fill(unsigned char c, int x, int y, int w, int h, unsigned char fg, unsigned char bg) {
+  for (int i = 0; i < w; i++)
+    for (int j = 0; j < h; j++)
+      ConLib::Put(c, x + i, y + j, fg, bg);
 }

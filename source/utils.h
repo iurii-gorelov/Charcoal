@@ -4,6 +4,9 @@
 // namespace for utility functions
 namespace Utils
 {
+  // released in main.cpp
+  void Quit(void);
+
   // read a file into a uchar array
   vec<uchar> ReadFile(string name);
 

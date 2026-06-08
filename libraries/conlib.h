@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <string>
 
 // class that contains all the functions
 // for the console management
@@ -18,8 +19,22 @@ namespace ConLib {
 
   // put a character on buffer
   void Put(
-    int x, int y, unsigned char c,
-    unsigned char fg, unsigned char bg);
+    unsigned char c, int x, int y,
+    unsigned char fg = 255, unsigned char bg = 255);
+
+  // attributes at position
+  unsigned short& AttrAt(int x, int y);
+
+  // call put on an area
+  void Fill(
+    unsigned char c,
+    int x, int y, int w, int h,
+    unsigned char fg = 255, unsigned char bg = 255);
+
+  // write a text to console
+  void Write(
+    std::string text, int x, int y,
+    int maxw = 999);
 
   // update buffer to screen
   void ApplyBuffer(void);
@@ -31,6 +46,7 @@ namespace ConLib {
   void Title(const char*);
 
   // function to make the console fullscreen
+  bool FullScreen(void);
   void FullScreen(bool);
 
   // no resize for window
@@ -53,6 +69,19 @@ namespace ConLib {
   // INPUT FUNCTIONS
   // checks if key is pressed
   bool Pressed(int key);
+
+  // just pressed (compile time)
+  template <int key>
+  bool PressedJ() {
+    static bool pressed = false;
+    if (Pressed(key)) {
+      if (!pressed)
+        return pressed = true;
+    }
+    else
+      pressed = false;
+    return false;
+  }
 
   // some keys
   const int KEY_ESC = 0x1B;

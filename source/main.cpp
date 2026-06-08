@@ -1,6 +1,7 @@
 #include <conlib.h>
 #include "scene.h"
 #include "resources.h"
+#include "global.h"
 
 // definitions
 umap<string, uptr<Res>> Res::resources;
@@ -19,7 +20,7 @@ int main()
   Scene::Switch("Menu");
 
   // main loop
-  while (!cl::Pressed(cl::KEY_ESC))
+  while (true)
   {
     // call current update function
     Scene::UpdateCurrent();
@@ -28,7 +29,10 @@ int main()
     cl::ApplyBuffer();
     cl::Sleep(1000 / FPS);
   }
+}
 
-  // free the console data
+// quit the game
+void Utils::Quit(void) {
   cl::Destroy();
+  exit(0);
 }

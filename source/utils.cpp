@@ -15,7 +15,7 @@ std::vector<uchar> Utils::ReadFile(string name)
 
   // read the file and return
   file.seekg(0, std::ios::beg);
-  file.read(reinterpret_cast<char*>(buffer.data()), buffer.size());
+  file.read(rcast<char*>(buffer.data()), buffer.size());
   file.close();
   return buffer;
 }
