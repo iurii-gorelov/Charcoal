@@ -1,7 +1,6 @@
 #include <conlib.h>
 #include "scene.h"
 #include "resources.h"
-#include "global.h"
 
 // definitions
 umap<string, uptr<Res>> Res::resources;

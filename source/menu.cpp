@@ -1,6 +1,5 @@
 #include "scene.h"
 #include "resources.h"
-#include "global.h"
 
 // short scene declaration
 DeclareScene(Menu,);
@@ -60,7 +59,7 @@ static void Update(void)
   // the actor key
   if (cl::PressedJ<' '>()) {
     if (cursor == 0)
-      Scene::Switch("NewGame");
+      Scene::Switch("Game");
     else if (cursor == 1) {
       cl::FullScreen(!cl::FullScreen());
       if (!cl::FullScreen())
