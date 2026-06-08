@@ -1,5 +1,9 @@
 #include "scene.h"
 #include "resources.h"
+#define MENU_START_GAME 0
+#define MENU_LOAD_GAME 1
+#define MENU_FULLSCREEN 2
+#define MENU_QUIT 3
 
 // short scene declaration
 DeclareScene(Menu,);
@@ -52,22 +56,25 @@ static void Update(void)
 
   // check for press
   if (cl::PressedJ<cl::KEY_DOWN>())
-    cursor = (cursor + 1) % 3; 
+    cursor = (cursor + 1) % 4; 
   else if (cl::PressedJ<cl::KEY_UP>())
-    cursor = (cursor - 1 + 3) % 3;
+    cursor = (cursor - 1 + 4) % 4;
   
   // the actor key
   if (cl::PressedJ<' '>()) {
-    if (cursor == 0)
+    if (cursor == MENU_START_GAME)
       Scene::Switch("Game");
-    else if (cursor == 1) {
+    else if (cursor == MENU_LOAD_GAME) {
+      Scene::Switch("LoadGame");
+    }
+    else if (cursor == MENU_FULLSCREEN) {
       cl::FullScreen(!cl::FullScreen());
       if (!cl::FullScreen())
         cl::Resize(
           settings["win-width"].asNum,
           settings["win-height"].asNum);
     }
-    else if (cursor == 2)
+    else if (cursor == MENU_QUIT)
       Utils::Quit();
   }
 
@@ -85,15 +92,16 @@ static void Update(void)
 
   // clear place for the menu
   int bx = cl::Width() / 2 - 7, by = cl::Height() / 2 - 3;
-  cl::Fill(' ', bx, by, 14, 5, 0x0F, 0x00);
+  cl::Fill(' ', bx, by, 14, 6, 0x0F, 0x00);
   
   // write the text
-  cl::Write("\f7NEW GAME",   bx + 3, by + 1);
+  cl::Write("\f7NEW GAME",     bx + 3, by + MENU_START_GAME + 1);
+  cl::Write("\f7LOAD GAME",    bx + 3, by + MENU_LOAD_GAME + 1);
   if (cl::FullScreen()) 
-    cl::Write("\f7FULLSCREEN", bx + 3, by + 2);
+    cl::Write("\f7FULLSCREEN", bx + 3, by + MENU_FULLSCREEN + 1);
   else 
-    cl::Write("\f7WINDOWED", bx + 3, by + 2);
-  cl::Write("\f7QUIT",       bx + 3, by + 3);
+    cl::Write("\f7WINDOWED",   bx + 3, by + MENU_FULLSCREEN + 1);
+  cl::Write("\f7QUIT",         bx + 3, by + MENU_QUIT + 1);
 
   // write the pointer
   cl::Put('X', bx + 1, by + 1 + cursor, 0x0A, 0x00);
