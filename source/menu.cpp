@@ -20,21 +20,21 @@ static void Init(void)
 
   // set the font
   cl::InstallFont(
-    ("resources/" + settings["font.name"].asStr + ".ttf")
+    ("resources/" + settings["font-name"].asStr + ".ttf")
       .c_str());
   cl::SetupFont(
-    settings["font.name"].asStr.c_str(),
-    settings["font.size"].asNum);
+    settings["font-name"].asStr.c_str(),
+    settings["font-size"].asNum);
   
   // check if it is fullscreen
-  if (settings["win.mode"].asNum == 1)
+  if (settings["win-mode"].asNum == 1)
     cl::FullScreen(true);
   
   // get the window size
   else
     cl::Resize(
-      settings["win.width"].asNum,
-      settings["win.height"].asNum);
+      settings["win-width"].asNum,
+      settings["win-height"].asNum);
 
   // set the title
   cl::Title("Charcoal");
@@ -64,8 +64,8 @@ static void Update(void)
       cl::FullScreen(!cl::FullScreen());
       if (!cl::FullScreen())
         cl::Resize(
-          settings["win.width"].asNum,
-          settings["win.height"].asNum);
+          settings["win-width"].asNum,
+          settings["win-height"].asNum);
     }
     else if (cursor == 2)
       Utils::Quit();

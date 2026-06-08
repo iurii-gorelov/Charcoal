@@ -1,8 +1,8 @@
 # windowed: 0, fullscreen: 1
 win-mode: 0
-win-width: 35
-win-height: 20
+win-width: 44
+win-height: 25
 
 # font settings
-font-size: 28
+font-size: 24
 font-name: "test2"
