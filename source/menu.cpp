@@ -14,9 +14,14 @@ static void Init(void)
   // get the settings
   settings = Res::Get<Res::UMF>("settings");
   
+  // minor settings 
+  cl::NoResize();
+  cl::NoScrollBar();
+  cl::NoSelect();
+
   // set the font
   cl::InstallFont(
-    ("resources/" + settings["font.path"].asStr + ".ttf")
+    ("resources/" + settings["font.name"].asStr + ".ttf")
       .c_str());
   cl::SetupFont(
     settings["font.name"].asStr.c_str(),
@@ -36,9 +41,6 @@ static void Init(void)
   cl::Title("Charcoal");
 
   // minor settings
-  cl::NoResize();
-  cl::NoScrollBar();
-  cl::NoSelect();
   cl::CursorMode(cl::CM_HIDDEN);
 }
 
@@ -47,13 +49,11 @@ static void Update(void)
 {
   // ticker
   static int tick = 0;
-  static bool downp = false;
-  static bool upp = false;
   static char cursor = 0;
 
   // check for press
   if (cl::PressedJ<cl::KEY_DOWN>())
-    cursor = (cursor + 1) % 3;
+    cursor = (cursor + 1) % 3; 
   else if (cl::PressedJ<cl::KEY_UP>())
     cursor = (cursor - 1 + 3) % 3;
   
@@ -80,7 +80,7 @@ static void Update(void)
     for (int x = (tick / 10) % 9 - cl::Height() - 8; x < cl::Width(); x += 9) {
       vec<string> colors = {"\f8", "\b8\f0", "\f7", "\bf\f0"};
       for (int i = 0; i < 4; i++)
-        cl::Write(colors[i] + "CHARCOAL", x + y + i, y + i);
+        cl::Write(colors[i] + "CHARCOAL ", x + y + i, y + i);
     }
   }
 

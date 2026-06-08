@@ -1,7 +1,7 @@
 # windowed: 0, fullscreen: 1
 win.mode: 1
 win.width: 35
-win.height: 24
+win.height: 20
 
 # font settings
 font.size: 28
