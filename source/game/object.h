@@ -21,6 +21,8 @@ class Object {
     static const uchar TREE = 3;
     static const uchar ROCK = 4;
     static const uchar FLOWER = 5;
+    static const uchar FIREPLACE = 6;
+    static const uchar PLAYER = 7;
 
     // info map
     static vec<Info> info;
@@ -75,12 +77,47 @@ class Block : public Object {
     }
 };
 
+// forward declaration
+class Area;
+
 // class for entities
 class Entity : public Object
 {
   // almost fully public
   public:
 
+    // render the entity
+    void Render(int x, int y) {
+      Object::Info& info = Object::info[id];
+      cl::Put(info.ciChar, x, y, info.cifg < 16 ? info.cifg : 0xff, info.cibg < 16 ? info.cibg : 0xff);
+    }
+
+    // constructor
+    Entity(uchar idt) { id = idt; }
+
     // has coords
     v2s pos;
+
+    // behaviour
+    virtual void Behave(Area* area) { }
+};
+
+// player object
+class Player : public Entity
+{
+  // private stuff
+  private:
+
+    // timers
+    ut::Timer moveTimer;
+    std::pair<v2s, char>* light;
+
+  // public stuff
+  public:
+
+    // constructor
+    Player(void) : Entity(Object::PLAYER), moveTimer(4) {}
+
+    // override the behaviour
+    void Behave(Area* area) override;
 };

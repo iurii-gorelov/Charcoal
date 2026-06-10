@@ -78,6 +78,26 @@ namespace Utils
       v2s SqrPos(int radius)
         { return v2s(Next(-radius, radius), Next(-radius, radius)); }
   };
+
+  // timer class
+  struct Timer 
+  {
+    // properties and constructor
+    int max, cur;
+    Timer(int max) : cur(max), max(max) {}
+
+    // reset the timer
+    void Reset(void) { cur = max; }
+
+    // check the timer
+    bool Check(bool update = true) {
+      if (cur == 0)
+        return true;
+      else
+        cur--;
+      return false;
+    }
+  };
 }
 
 // alias

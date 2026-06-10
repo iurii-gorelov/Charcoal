@@ -27,3 +27,9 @@
 
 # [Block] Flower
 5/charinfo: "e6t"
+
+# [Block] Fireplace
+6/charinfo: "f4t"
+
+# [Entity] Player
+7/charinfo: "g0t"

@@ -22,14 +22,14 @@ static void Init(void)
 static void Update(void)
 {
   // move the camera
-  if (cl::Pressed(cl::KEY_UP) && ut::ticks % 2)
-    Game::curArea->camera.y--;
-  else if (cl::Pressed(cl::KEY_DOWN) && ut::ticks % 2)
-    Game::curArea->camera.y++;
-  if (cl::Pressed(cl::KEY_LEFT) && ut::ticks % 2)
-    Game::curArea->camera.x--;
-  else if (cl::Pressed(cl::KEY_RIGHT) && ut::ticks % 2)
-    Game::curArea->camera.x++;
+  // if (cl::Pressed(cl::KEY_UP) && ut::ticks % 2)
+  //   Game::curArea->camera.y--;
+  // else if (cl::Pressed(cl::KEY_DOWN) && ut::ticks % 2)
+  //   Game::curArea->camera.y++;
+  // if (cl::Pressed(cl::KEY_LEFT) && ut::ticks % 2)
+  //   Game::curArea->camera.x--;
+  // else if (cl::Pressed(cl::KEY_RIGHT) && ut::ticks % 2)
+  //   Game::curArea->camera.x++;
 
   // quit to the menu
   if (cl::JustPressed<cl::KEY_ESC>())
