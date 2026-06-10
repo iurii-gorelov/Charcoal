@@ -49,7 +49,6 @@ static void Init(void)
 static void Update(void)
 {
   // ticker
-  static int tick = 0;
   static char cursor = 0;
 
   // check for press
@@ -61,7 +60,7 @@ static void Update(void)
   // the actor key
   if (cl::JustPressed<' '>()) {
     if (cursor == MENU_START_GAME)
-      Scene::Switch("Game");
+      Scene::Switch("Seed");
     else if (cursor == MENU_LOAD_GAME)
       Scene::Switch("LoadGame");
     else if (cursor == MENU_FULLSCREEN)
@@ -74,8 +73,8 @@ static void Update(void)
   cl::Fill(' ', 0, 0, cl::Width(), cl::Height(), 0x0F, 0x00);
 
   // background
-  for (int y = (tick / 10) % 4 - 3; y < cl::Height(); y += 4) {
-    for (int x = (tick / 10) % 9 - cl::Height() - 8; x < cl::Width(); x += 9) {
+  for (int y = (ut::ticks / 10) % 4 - 3; y < cl::Height(); y += 4) {
+    for (int x = (ut::ticks / 10) % 9 - cl::Height() - 8; x < cl::Width(); x += 9) {
       vec<string> colors = {"\f8", "\b8\f0", "\f7", "\bf\f0"};
       for (int i = 0; i < 4; i++)
         cl::Write(colors[i] + "CHARCOAL ", x + y + i, y + i);
@@ -102,9 +101,6 @@ static void Update(void)
 
   // buggy cursor
   cl::CursorMode(cl::CM_HIDDEN);
-
-  // increment the tick
-  tick++;
 }
 
 // toggle fullscreen
