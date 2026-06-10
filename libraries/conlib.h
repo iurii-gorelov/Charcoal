@@ -72,7 +72,7 @@ namespace ConLib {
 
   // just pressed (compile time)
   template <int key>
-  bool PressedJ() {
+  bool JustPressed() {
     static bool pressed = false;
     if (Pressed(key)) {
       if (!pressed)

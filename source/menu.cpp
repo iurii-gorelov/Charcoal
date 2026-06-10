@@ -6,10 +6,13 @@
 #define MENU_QUIT 3
 
 // short scene declaration
-DeclareScene(Menu,);
+DeclareScene(Menu);
 
 // global settings
 static Res::UMF settings;
+
+// function to toggle fullscreen
+static void ToggleFullscreen(void);
 
 // gets the settings
 static void Init(void)
@@ -28,17 +31,12 @@ static void Init(void)
       .c_str());
   cl::SetupFont(
     settings["font-name"].asStr.c_str(),
-    settings["font-size"].asNum);
+    settings["font-size-win"].asNum);
   
-  // check if it is fullscreen
-  if (settings["win-mode"].asNum == 1)
-    cl::FullScreen(true);
-  
-  // get the window size
-  else
-    cl::Resize(
-      settings["win-width"].asNum,
-      settings["win-height"].asNum);
+  // set the window size
+  cl::Resize(
+    settings["win-width"].asNum,
+    settings["win-height"].asNum);
 
   // set the title
   cl::Title("Charcoal");
@@ -55,25 +53,19 @@ static void Update(void)
   static char cursor = 0;
 
   // check for press
-  if (cl::PressedJ<cl::KEY_DOWN>())
+  if (cl::JustPressed<cl::KEY_DOWN>())
     cursor = (cursor + 1) % 4; 
-  else if (cl::PressedJ<cl::KEY_UP>())
+  else if (cl::JustPressed<cl::KEY_UP>())
     cursor = (cursor - 1 + 4) % 4;
   
   // the actor key
-  if (cl::PressedJ<' '>()) {
+  if (cl::JustPressed<' '>()) {
     if (cursor == MENU_START_GAME)
       Scene::Switch("Game");
-    else if (cursor == MENU_LOAD_GAME) {
+    else if (cursor == MENU_LOAD_GAME)
       Scene::Switch("LoadGame");
-    }
-    else if (cursor == MENU_FULLSCREEN) {
-      cl::FullScreen(!cl::FullScreen());
-      if (!cl::FullScreen())
-        cl::Resize(
-          settings["win-width"].asNum,
-          settings["win-height"].asNum);
-    }
+    else if (cursor == MENU_FULLSCREEN)
+      ToggleFullscreen();
     else if (cursor == MENU_QUIT)
       Utils::Quit();
   }
@@ -108,6 +100,35 @@ static void Update(void)
   for (int i = 0; i < 14; i++)
     cl::AttrAt(bx + i, by + 1 + cursor) = 0x0A;
 
+  // buggy cursor
+  cl::CursorMode(cl::CM_HIDDEN);
+
   // increment the tick
   tick++;
+}
+
+// toggle fullscreen
+static void ToggleFullscreen(void)
+{
+  // in case of windowed mode
+  if (cl::FullScreen()) 
+    cl::SetupFont(
+      settings["font-name"].asStr.c_str(),
+      settings["font-size-win"].asNum);
+
+  // fullscreen
+  else {
+    cl::SetupFont(
+      settings["font-name"].asStr.c_str(),
+      settings["font-size-fs"].asNum);
+  }
+  
+  // toggle the real value
+  cl::FullScreen(!cl::FullScreen());
+
+  // set the window size
+  if (!cl::FullScreen())
+    cl::Resize(
+      settings["win-width"].asNum,
+      settings["win-height"].asNum);
 }

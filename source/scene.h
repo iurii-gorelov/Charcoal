@@ -2,15 +2,14 @@
 #include "define.h"
 
 // scene flags
-#define SC_NO_INIT static void Init(void) {}
-#define SC_NO_UPDATE static void Update(void) {}
+#define SC_DEFAULT_INIT static void Init(void) {}
+#define SC_DEFAULT_UPDATE static void Update(void) {}
 
 // shortcut for the scene class
-#define DeclareScene(name, defaults) \
+#define DeclareScene(name) \
   static void Init(); \
   static void Update(); \
-  static Scene scene(#name, Init, Update); \
-  defaults;
+  static Scene scene(#name, Init, Update);
 
 
 // class that defines a scene

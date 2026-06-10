@@ -10,7 +10,7 @@ static HANDLE ohandle = 0;
 static HANDLE ihandle = 0;
 static HWND   window  = 0;
 static bool   noScrollBar = false;
-static bool isFullScreen = false;
+static bool   isFullScreen = false;
 
 // buffer for the console
 COORD      bufsize = {0, 0};

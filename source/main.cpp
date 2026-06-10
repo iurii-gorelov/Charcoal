@@ -5,6 +5,7 @@
 // definitions
 umap<string, uptr<Res>> Res::resources;
 Scene* Scene::sceneptr;
+int Utils::ticks = 0;
 
 // constants
 const int FPS = 60;
@@ -27,6 +28,7 @@ int main()
     // apply the buffer and delay
     cl::ApplyBuffer();
     cl::Sleep(1000 / FPS);
+    ut::ticks++;
   }
 }
 

@@ -25,3 +25,13 @@ string Utils::GetExt(string path) {
   int dot = path.find_last_of('.');
   return path.substr(dot + 1);
 }
+
+// char hex to int (only lowercase)
+int Utils::Chtoi(char c) {
+  return c - (c >= '0' && c <= '9' ? '0' : 'W');
+}
+
+// color decay table
+int Utils::decay[16] {
+  0, 0, 0, 0, 0, 0, 0, 8, 0, 1, 2, 3, 4, 5, 6, 7
+};
