@@ -5,7 +5,6 @@
 // definitions
 umap<string, uptr<Res>> Res::resources;
 Scene* Scene::sceneptr;
-int Utils::ticks = 0;
 
 // constants
 const int FPS = 60;
