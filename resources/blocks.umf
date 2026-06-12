@@ -20,16 +20,32 @@
 1/charinfo: "a19"
 1/collision: "10"
 
+
 # Grass
 2/name: "grass"
 2/charinfo: "b2t"
 2/collision: "00"
+
+# Flower
+5/name: "flower"
+5/charinfo: "e6t"
+5/collision: "00"
+
 
 # Tree
 3/name: "tree"
 3/charinfo: "c2t"
 3/collision: "11"
 3/health: 5
+3/drop: "planks planks"
+
+# Red Tree
+7/name: "redtree"
+7/charinfo: "c6t"
+7/collision: "11"
+7/health: 5
+7/drop: "planks planks apple"
+
 
 # Rock
 4/name: "rock"
@@ -37,13 +53,16 @@
 4/collision: "11"
 4/health: 20
 
-# Flower
-5/name: "flower"
-5/charinfo: "e6t"
-5/collision: "00"
 
 # Fireplace
 6/name: "fireplace"
 6/charinfo: "f4t"
 6/collision: "11"
 6/health: 3
+
+# Planks
+8/name: "planks"
+8/charinfo: "i6e"
+8/collision: "11"
+8/health: 3
+8/drop: "planks"

@@ -38,10 +38,11 @@ void Area::GenerateIsland(void)
         v2s(i % size.x, i / size.x) +
           rand.SqrPos(10);
 
+      // circular form
       for (int dx = -radius; dx <= radius; dx++)
         for (int dy = -radius; dy <= radius; dy++)
           if (dx * dx + dy * dy <= radius * radius && rand.Chance(0.8))
-            BlockPut("tree", center.x + dx, center.y + dy);
+            BlockPut(rand.Chance(0.1) ? "redtree" : "tree", center.x + dx, center.y + dy);
     }
   }
 
@@ -64,6 +65,33 @@ void Area::GenerateIsland(void)
     }
   }
 
+  // generate waters
+  for (int i = 0; i < size.Area(); i++)
+  {
+    // chance of lake generation
+    if (!rand.Chance(0.001))
+      continue;
+
+    // random amount of patches
+    int clusterCount = rand.Next(4, 8);
+    
+    // each patch is a circle
+    for (int j = 0; j < clusterCount; j++)
+    {
+      // random size and position
+      float radius = rand.Next(1, 3) * 2 + 0.5;
+      v2s center =
+        v2s(i % size.x, i / size.x) +
+          rand.SqrPos(4);
+
+      // circular form
+      for (int dx = -radius; dx <= radius; dx++)
+        for (int dy = -radius; dy <= radius; dy++)
+          if (dx * dx + dy * dy <= radius * radius)
+            BlockPut("water", center.x + dx, center.y + dy);
+    }
+  }
+
   // generate the water around
   for (int x = 0; x < size.x; x++) {
     for (int y = 0; y < size.y; y++) {
@@ -79,11 +107,16 @@ void Area::GenerateIsland(void)
     }
   }
 
-  // find place to spawn the player
-  // for (int i = 0; i < size.Area(); i += size.x / 16)
-  //   if (blocks[i].id == "air" && rand.Chance(0.001))
-  //     spawnPoint = v2s(i % size.x, i / size.x);
+  // clear space for the player
+  for (int wx = size.x / 2 - 4; wx < size.x / 2 + 4; wx++) {
+    for (int wy = size.y / 2 - 4; wy < size.y / 2 + 4; wy++) {
+      Block& block = blocks[wx + wy * size.x];
+      Info::Block& info = Info::blocks[block.id];
+      if (info.entCol)
+        block.id = 0;
+    }
+  }
 
   // create the player
-  EntityAdd(player = new Player(this, v2s(20, 20)));
+  EntityAdd(player = new Player(this, v2s(size.x / 2, size.y / 2)));
 }

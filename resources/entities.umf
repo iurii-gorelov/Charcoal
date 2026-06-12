@@ -15,4 +15,10 @@
 1/name:      "projectile"
 1/charinfo:  "h1"
 1/collision: 0
-1/health:    0
+1/health:    1
+
+# Drop
+2/name:      "drop"
+2/charinfo:  "^1"
+2/collision: 0
+2/health:    0

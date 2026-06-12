@@ -99,6 +99,27 @@ class Area
           info.bg < 16 ? info.bg : 0xff);
     }
 
+    // damage block
+    void BlockDamage(v2s pos, int damage)
+    {  
+      // get the block
+      Block& block = blocks[pos.x + pos.y * size.x];
+      Info::Block& info = Info::blocks[block.id];
+
+      // damage the block
+      if (damage <= block.hp)
+        block.hp -= damage;
+      else
+        block.hp = 0;
+
+      // if the block is destroyed
+      if (block.hp == 0) {
+        if (info.drop != "")
+          EntityAdd(new Drop(this, pos, info.drop));
+        block.id = 0;
+      }
+    }
+
     // create a light
     Light* LightCreate(v2s pos, float scalar) {
       lights.resize(lights.size() + 1);
@@ -133,9 +154,9 @@ class Area
       // dawn and sunset times
       uint daytime = time % DAY_LENGTH;
       if (daytime < TIME_DAWN)
-        lightScalar = 2 + 4.0 * daytime / TIME_DAWN;
+        lightScalar = 2 + 5.0 * daytime / TIME_DAWN;
       else if (daytime >= DAY_LENGTH / 2 && daytime < DAY_LENGTH / 2 + TIME_DAWN)
-        lightScalar = 2 + 4 * (1 - scast<float>(daytime - DAY_LENGTH / 2) / TIME_DAWN);
+        lightScalar = 2 + 5 * (1 - scast<float>(daytime - DAY_LENGTH / 2) / TIME_DAWN);
 
       // increment the time
       time++;

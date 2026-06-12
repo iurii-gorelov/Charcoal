@@ -33,7 +33,7 @@ void Entity::ApplyDamage(int damage) {
 
 // player constructor
 Player::Player(Area* area, v2s pos) : Entity(area, pos, Info::Entity::ids["player"]) {
-  moveTimer = ut::Timer(4);
+  moveTimer = ut::Timer(8);
   light = area->LightCreate(pos, 10);
 }
 
@@ -48,16 +48,19 @@ void Player::Behave(void)
   moveTimer.Check();
   useTimer.Check();
 
+  // change hotbar and update use timer
+  if (cl::Pressed('C')) {
+    if (cl::JustPressed<cl::KEY_DOWN>())
+      SelectItem((Game::selectedSlot + 1 + HOTBAR_SIZE) % HOTBAR_SIZE);
+    else if (cl::JustPressed<cl::KEY_UP>())
+      SelectItem((Game::selectedSlot + HOTBAR_SIZE - 1) % HOTBAR_SIZE);
+  }
+  
   // use item
-  if (cl::Pressed('Z')) {
+  else if (cl::Pressed('Z')) {
     if (dirX != 0 || dirY != 0)
       UseItem(v2s(dirX, dirY));
   }
-
-  // change hotbar and update use timer
-  else if (cl::Pressed(cl::KEY_TAB))
-    SelectItem((Game::selectedSlot + 1) % HOTBAR_SIZE);
-  
 
   // move by timer
   else if (moveTimer.Check(false)) {
@@ -74,7 +77,9 @@ void Player::Behave(void)
 // select an item
 void Player::SelectItem(int slot) {
   Game::selectedSlot = slot;
-  Info::Item& item = Info::items[Game::hotbar[slot]];
+  if (Game::selectedSlot >= Game::inventory.size())
+    Game::selectedSlot = 0;
+  Info::Item& item = Info::items[Game::inventory[Game::selectedSlot].first];
   useTimer.max = item.useTimer;
   useTimer.Reset();
 }
@@ -96,9 +101,9 @@ void Player::UseItem(v2s dir)
   useTimer.Reset();
 
   // get the item id
-  uchar itemId = Game::hotbar[Game::selectedSlot];
+  uchar itemId = Game::inventory[Game::selectedSlot].first;
   Info::Item& item = Info::items[itemId];
-  uchar& itemCount = Game::inventory[itemId];
+  uchar& itemCount = Game::inventory[Game::selectedSlot].second;
 
   // check if the item is available
   if (itemCount <= 0)
@@ -106,23 +111,61 @@ void Player::UseItem(v2s dir)
 
   // item is wand
   if (item.type == 1)
-    area->EntityAdd(new Projectile(area, pos, dir, this, item));
+    area->EntityAdd(new Projectile(area, pos + dir, dir, this, item));
+  
+  // item is block
+  if (item.type == 2) {
+    v2s targetPos = pos + dir;
+    Block& slot = area->blocks[targetPos.x + targetPos.y * area->size.x];
+    if (Info::blocks[slot.id].entCol)
+      return;
+    area->BlockPut(Info::Block::ids[Info::items[itemId].name], targetPos.x, targetPos.y);
+    Game::RemoveItem(itemId);
+  }
+
+  // item is food
+  if (item.type == 3) {
+    area->player->health += item.food;
+    Game::RemoveItem(itemId);
+  }
 }
 
 // behaviour
 void Projectile::Behave(void)
 {
-  // move
-  pos = pos + direction;
-  power--;
+  // only odd ticks
+  if (ut::ticks % 2)
+    return;
 
   // check if
   if (area->Inside(pos) && Info::blocks[area->blocks[pos.x + pos.y * area->size.x].id].projCol) {
-    area->blocks[pos.x + pos.y * area->size.x].id = 0;
+    area->BlockDamage(pos, 1);
     area->EntityRemove(this);
+    return;
   }
 
   // remove if out of power
-  else if (power <= 0)
+  else if (power <= 0) {
     area->EntityRemove(this);
+    return;
+  }
+    
+  // move
+  pos = pos + direction;
+  power--;
+}
+
+// drop behaviour
+void Drop::Behave(void) {
+  if (pos == area->player->pos) {
+    for (int i = 0; i < drops.size(); i++)
+      Game::AddItem(drops[i]);
+    area->EntityRemove(this);
+  }
+}
+
+// drop render
+void Drop::Render(int sx, int sy) {
+  Info::Entity& info = Info::entities[id];
+  cl::Put(info.character, sx, sy, info.fgcolor + (ut::ticks / 4 % 2 ? 0 : 8));
 }

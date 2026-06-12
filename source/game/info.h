@@ -23,6 +23,7 @@ namespace Info
 
     // the properties
     string name;
+    string drop = "";
     uchar hp;
 
     // collision
@@ -72,6 +73,10 @@ namespace Info
         // health
         else if (idTitle.second == "health")
           blocks[id].hp = dval;
+
+        // drop
+        else if (idTitle.second == "drop")
+          blocks[id].drop = sval;
       }
     }
   };
@@ -143,12 +148,15 @@ namespace Info
     string title;
     string name;
     uchar type;
-    int useTimer;
+    int useTimer = 1;
 
     // wand properties
     double wandDamage;
     double wandPower;
     double wandProjs;
+
+    // food properties
+    int food;
 
     // the parser
     static void Parse(Res::UMF umf)
@@ -189,6 +197,10 @@ namespace Info
           items[id].wandPower = dval;
         else if (idTitle.second == "wand/projs")
           items[id].wandProjs = dval;
+
+        // food stuff
+        else if (idTitle.second == "food")
+          items[id].food = dval;
       }
     }
   };

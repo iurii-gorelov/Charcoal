@@ -34,6 +34,8 @@ template <typename I, typename T> using
   map = std::map<I, T>;
 template <typename I, typename T> using
   umap = std::unordered_map<I, T>;
+template <typename I, typename T> using
+  pair = std::pair<I, T>;
 
 // no more long casts
 #define rcast reinterpret_cast

@@ -62,7 +62,7 @@ static void Update(void)
     if (cursor == MENU_START_GAME)
       Scene::Switch("Seed");
     else if (cursor == MENU_LOAD_GAME)
-      Scene::Switch("LoadGame");
+      Scene::Switch("");
     else if (cursor == MENU_FULLSCREEN)
       ToggleFullscreen();
     else if (cursor == MENU_QUIT)
@@ -87,7 +87,7 @@ static void Update(void)
   
   // write the text
   cl::Write("\f7NEW GAME",     bx + 3, by + MENU_START_GAME + 1);
-  cl::Write("\f7LOAD GAME",    bx + 3, by + MENU_LOAD_GAME + 1);
+  cl::Write("\f7CONTINUE",     bx + 3, by + MENU_LOAD_GAME + 1);
   if (cl::FullScreen()) 
     cl::Write("\f7FULLSCREEN", bx + 3, by + MENU_FULLSCREEN + 1);
   else 
@@ -95,7 +95,7 @@ static void Update(void)
   cl::Write("\f7QUIT",         bx + 3, by + MENU_QUIT + 1);
 
   // write the pointer
-  cl::Put('X', bx + 1, by + 1 + cursor, 0x0A, 0x00);
+  cl::Put('>', bx + 1, by + 1 + cursor, 0x0A, 0x00);
   for (int i = 0; i < 14; i++)
     cl::AttrAt(bx + i, by + 1 + cursor) = 0x0A;
 

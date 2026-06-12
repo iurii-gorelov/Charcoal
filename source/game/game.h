@@ -12,14 +12,14 @@
 namespace Game
 {
   // absolutely all areas here
-  extern vec<uptr<Area>> areas;
-  extern Area* curArea;
+  extern uptr<Area> curArea;
 
   // player's inventory
-  extern umap<uchar, uchar> inventory;
-  extern uchar hotbar[HOTBAR_SIZE];
+  extern vec<std::pair<uchar, uchar>> inventory;
   extern uchar selectedSlot;
 
   // create a new world
   void CreateWorld(int seed);
+  void AddItem(uchar id);
+  void RemoveItem(uchar id);
 }
