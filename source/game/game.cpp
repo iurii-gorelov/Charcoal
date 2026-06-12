@@ -53,7 +53,7 @@ void Game::CreateWorld(int seed) {
   curArea.reset(new Area());
   curArea->rand.seed = seed;
   curArea->GenerateIsland();
-  inventory.push_back(std::make_pair(1, 1));
+  AddItem(1);
   curArea->player->SelectItem(0);
 }
 
@@ -86,8 +86,9 @@ static void RenderUI(void)
     cl::Put(itemString[Game::selectedSlot][i], cl::Width() - itemString[Game::selectedSlot].length() - 1 + i, 1, 0x0f);
 
   // if inventory is open
-  if (cl::Pressed('C'))
+  if (cl::Pressed('X'))
   {
+    // maximum length
     int maxLen = std::max_element(itemString, itemString + 4,
       [](string a, string b) { return a.length() < b.length(); })->length();
 
@@ -106,11 +107,18 @@ static void RenderUI(void)
   }
 }
 
+// get an item
+pair<uchar, uchar>* Game::GetItem(uchar id) {
+  for (auto& pair : Game::inventory)
+    if (pair.first == id)
+      return &pair;
+  return nullptr;
+}
+
 // add an item to the inventory
 void Game::AddItem(uchar id) {
-  auto res = std::find_if(Game::inventory.begin(), Game::inventory.end(),
-    [id](auto& pair) { return pair.first == id; });
-  if (res == Game::inventory.end())
+  auto res = Game::GetItem(id);
+  if (res == nullptr)
     Game::inventory.push_back(std::make_pair(id, 1));
   else
     res->second++;

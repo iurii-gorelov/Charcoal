@@ -1,6 +1,7 @@
 #include "area.h"
 #include "entity.h"
 #include "game.h"
+#include <cmath>
 
 // remove entity default
 void Entity::Death(void) {
@@ -49,7 +50,7 @@ void Player::Behave(void)
   useTimer.Check();
 
   // change hotbar and update use timer
-  if (cl::Pressed('C')) {
+  if (cl::Pressed('X')) {
     if (cl::JustPressed<cl::KEY_DOWN>())
       SelectItem((Game::selectedSlot + 1 + HOTBAR_SIZE) % HOTBAR_SIZE);
     else if (cl::JustPressed<cl::KEY_UP>())
@@ -68,6 +69,10 @@ void Player::Behave(void)
     TryMove(0, dirY);
     moveTimer.Reset();
   }
+
+  // go to inventory
+  if (cl::JustPressed<'C'>())
+    Scene::Switch("Inventory");
 
   // follow by the camera and light
   area->camera = pos;
@@ -140,18 +145,22 @@ void Projectile::Behave(void)
   // check if
   if (area->Inside(pos) && Info::blocks[area->blocks[pos.x + pos.y * area->size.x].id].projCol) {
     area->BlockDamage(pos, 1);
+    area->LightRemove(light);
     area->EntityRemove(this);
     return;
   }
 
   // remove if out of power
   else if (power <= 0) {
+    area->LightRemove(light);
     area->EntityRemove(this);
     return;
   }
     
   // move
   pos = pos + direction;
+  light->pos = pos;
+  light->scalar = std::min(power / 3, 10);
   power--;
 }
 
@@ -168,4 +177,14 @@ void Drop::Behave(void) {
 void Drop::Render(int sx, int sy) {
   Info::Entity& info = Info::entities[id];
   cl::Put(info.character, sx, sy, info.fgcolor + (ut::ticks / 4 % 2 ? 0 : 8));
+}
+
+// projectile constructor
+Projectile::Projectile(Area* area, v2s pos, v2s dir, Entity* own, Info::Item& wand)  :
+  Entity(area, pos, Info::Entity::ids["projectile"]),
+  owner(own),
+  power(wand.wandPower),
+  direction(dir) {
+  health = wand.wandDamage;
+  light = area->LightCreate(pos, 0);
 }

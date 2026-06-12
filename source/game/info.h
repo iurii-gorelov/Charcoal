@@ -25,6 +25,7 @@ namespace Info
     string name;
     string drop = "";
     uchar hp;
+    uchar light = 0;
 
     // collision
     bool entCol;
@@ -77,6 +78,10 @@ namespace Info
         // drop
         else if (idTitle.second == "drop")
           blocks[id].drop = sval;
+
+        // light
+        else if (idTitle.second == "light")
+          blocks[id].light = dval;
       }
     }
   };

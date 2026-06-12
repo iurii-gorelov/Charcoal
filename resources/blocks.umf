@@ -51,7 +51,29 @@
 4/name: "rock"
 4/charinfo: "d8t"
 4/collision: "11"
-4/health: 20
+4/health: 10
+4/drop: "cobble cobble cobble cobble"
+
+# Coal
+9/name: "coal"
+9/charinfo: "d0t"
+9/collision: "11"
+9/health: 15
+9/drop: "coal coal"
+
+# Iron
+10/name: "iron"
+10/charinfo: "d7t"
+10/collision: "11"
+10/health: 20
+10/drop: "iron"
+
+# Gold
+11/name: "gold"
+11/charinfo: "g6t"
+11/collision: "11"
+11/health: 30
+11/drop: "gold"
 
 
 # Fireplace
@@ -59,6 +81,8 @@
 6/charinfo: "f4t"
 6/collision: "11"
 6/health: 3
+6/light: 8
+6/drop: "fireplace"
 
 # Planks
 8/name: "planks"
@@ -66,3 +90,18 @@
 8/collision: "11"
 8/health: 3
 8/drop: "planks"
+
+# Cobble
+12/name: "cobble"
+12/charinfo: "j87"
+12/collision: "11"
+12/health: 7
+12/drop: "cobble"
+
+# Stone Bricks
+13/name: "stonebricks"
+13/charinfo: "k87"
+13/collision: "11"
+13/health: 3
+13/drop: "stonebricks"
+13/toohard: 1

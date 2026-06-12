@@ -22,4 +22,5 @@ namespace Game
   void CreateWorld(int seed);
   void AddItem(uchar id);
   void RemoveItem(uchar id);
+  pair<uchar, uchar>* GetItem(uchar id);
 }

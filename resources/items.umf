@@ -42,3 +42,33 @@
 3/type: 3
 3/usetimer: 16
 3/food: 1
+
+# Cobble
+4/name: "cobble"
+4/title: "COBBLE"
+4/type: 2
+
+# Fireplace
+5/name: "fireplace"
+5/title: "CAMPFIRE"
+5/type: 2
+
+# Coal
+6/name: "coal"
+6/title: "COAL"
+6/type: 0
+
+# Iron
+7/name: "iron"
+7/title: "IRON"
+7/type: 0
+
+# Gold
+8/name: "gold"
+8/title: "GOLD"
+8/type: 0
+
+# Stone Bricks
+9/name: "stonebricks"
+9/title: "STONE BRICKS"
+9/type: 2

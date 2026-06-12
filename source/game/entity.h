@@ -108,18 +108,13 @@ class Projectile : public Entity
     Entity* owner;
     int power;
     v2s direction;
+    Light* light;
 
   // public
   public:
     
     // constructor
-    Projectile(Area* area, v2s pos, v2s dir, Entity* own, Info::Item& wand)  :
-      Entity(area, pos, Info::Entity::ids["projectile"]),
-      owner(own),
-      power(wand.wandPower),
-      direction(dir) {
-      health = wand.wandDamage;
-    }
+    Projectile(Area* area, v2s pos, v2s dir, Entity* own, Info::Item& wand);
 
     // override the behaviour
     void Behave(void) override;

@@ -27,8 +27,9 @@ class Area
 
     // current state
     v2s camera = {0, 0};
-    ulong time = 0;
+    ulong time = 3600;
     float lightScalar = 1;
+    float lightCubed = 1;
     
     // generation properties
     v2s size;
@@ -42,7 +43,7 @@ class Area
     // blocks and entities
     vec<Block> blocks;
     vec<uptr<Entity>> entities;
-    vec<Light> lights;
+    vec<uptr<Light>> lights;
     Player* player;
 
   // methods
@@ -65,8 +66,13 @@ class Area
     void BlockPut(int id, int x, int y) {
       if (!Inside(v2s(x, y)))
         return;
-      blocks[x + y * size.x].id = id;
-      blocks[x + y * size.x].hp = Info::blocks[id].hp;
+      auto& info = Info::blocks[id];
+      auto& block = blocks[x + y * size.x];
+      if (info.light > 0)
+        LightCreate(v2s(x, y), info.light),
+        block.ex = 'l';
+      block.id = id;
+      block.hp = Info::blocks[id].hp;
     }
 
     // by name
@@ -116,17 +122,54 @@ class Area
       if (block.hp == 0) {
         if (info.drop != "")
           EntityAdd(new Drop(this, pos, info.drop));
+        if (info.light > 0)
+          LightRemove(pos);
         block.id = 0;
       }
     }
 
     // create a light
     Light* LightCreate(v2s pos, float scalar) {
-      lights.resize(lights.size() + 1);
-      Light& light = lights.back();
-      light.pos = pos;
-      light.scalar = scalar;
-      return &light;
+      Light* light = new Light();
+      light->pos = pos;
+      light->scalar = scalar;
+      lights.push_back(uptr<Light>(light));
+      return light;
+    }
+
+    // remove a light
+    void LightRemove(v2s pos) {
+      for (int i = 0; i < lights.size(); i++)
+        if (lights[i]->pos == pos)
+          lights.erase(lights.begin() + i);
+    }
+
+    // remove a light by addr
+    void LightRemove(Light* light) {
+      for (int i = 0; i < lights.size(); i++)
+        if (lights[i].get() == light)
+          lights.erase(lights.begin() + i);
+    }
+
+    // get light level at pos
+    float LightLevel(v2s pos) {
+      float result = 0;
+      for (auto& light : lights) {
+        float sqdist = (v2s(pos.x, pos.y) - light->pos).LengthSq();
+        int lightsq = light->scalar * lightCubed;
+        
+        // break if too far
+        if (sqdist > lightsq)
+          continue;
+
+        // add to the mask
+        result += 1 - sqdist / lightsq;
+
+        // optimization
+        if (result > 0.7)
+          return result;
+      }
+      return result;
     }
 
     // spawn an entity
@@ -193,35 +236,14 @@ class Area
 
       // render light mask
       vec<float> lightMask(cl::Width() * cl::Height(), 0);
-      float lcubed = lightScalar * lightScalar * lightScalar;
+      lightCubed = lightScalar * lightScalar * lightScalar;
 
       // for each point on the screen
-      for (int x = 0; x < cl::Width(); x++) {
+      for (int x = 0; x < cl::Width(); x++)
         for (int y = 0; y < cl::Height(); y++)
-        {
-          // get the world coords
-          int wx = x + camera.x - cl::Width() / 2;
-          int wy = y + camera.y - cl::Height() / 2;
-          int lmpos = x + y * cl::Width();
-
-          // try find light
-          for (auto& light : lights) {
-            float sqdist = (v2s(wx, wy) - light.pos).LengthSq();
-            int lightsq = light.scalar * lcubed;
-            
-            // break if too far
-            if (sqdist > lightsq)
-              continue;
-
-            // add to the mask
-            lightMask[lmpos] += 1 - sqdist / lightsq;
-
-            // optimization
-            if (lightMask[lmpos] > 0.7)
-              break;
-          }
-        }
-      }
+          lightMask[x + y * cl::Width()] = LightLevel(v2s(
+            x + camera.x - cl::Width() / 2,
+            y + camera.y - cl::Height() / 2));
 
       // write the light mask
       for (int x = 0; x < cl::Width(); x++) {

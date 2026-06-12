@@ -61,7 +61,14 @@ void Area::GenerateIsland(void)
       v2s pos =
         v2s(i % size.x, i / size.x) +
         rand.SqrPos(4);
-      BlockPut("rock", pos.x, pos.y);
+      if (rand.Chance(0.04))
+        BlockPut("gold", pos.x, pos.y);
+      else if (rand.Chance(0.011))
+        BlockPut("iron", pos.x, pos.y);
+      else if (rand.Chance(0.25))
+        BlockPut("coal", pos.x, pos.y);
+      else
+        BlockPut("rock", pos.x, pos.y);
     }
   }
 

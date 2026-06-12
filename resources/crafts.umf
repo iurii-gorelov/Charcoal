@@ -1,0 +1,11 @@
+# Crafting Recipes
+# $: start recipe
+# #: recipe count
+# <item>: <count>
+
+fireplace/$: 1
+fireplace/planks: 4
+fireplace/coal: 2
+
+stonebricks/$: 1
+stonebricks/cobble: 4
