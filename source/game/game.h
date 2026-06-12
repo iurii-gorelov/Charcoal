@@ -3,7 +3,6 @@
 #include "../resources.h"
 #include "../utils.h"
 #include "../define.h"
-#include "object.h"
 #include "area.h"
 
 // global namespace for the game
@@ -14,5 +13,5 @@ namespace Game
   extern Area* curArea;
 
   // create a new world
-  void CreateWorld(void);
+  void CreateWorld(int seed);
 }

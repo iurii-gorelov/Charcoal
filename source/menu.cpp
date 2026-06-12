@@ -58,7 +58,7 @@ static void Update(void)
     cursor = (cursor - 1 + 4) % 4;
   
   // the actor key
-  if (cl::JustPressed<' '>()) {
+  if (cl::JustPressed<cl::KEY_ENTER>()) {
     if (cursor == MENU_START_GAME)
       Scene::Switch("Seed");
     else if (cursor == MENU_LOAD_GAME)

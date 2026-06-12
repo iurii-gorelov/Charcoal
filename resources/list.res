@@ -1,3 +1,5 @@
 # testing the resource list
 settings: "resources/settings.umf"
-objects: "resources/objects.umf"
+blocks:   "resources/blocks.umf"
+entities: "resources/entities.umf"
+items:    "resources/items.umf"

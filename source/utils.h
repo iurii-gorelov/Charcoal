@@ -49,6 +49,9 @@ namespace Utils
   // char hex to int
   int Chtoi(char c);
 
+  // splitter
+  std::pair<string, string> Split(string str, char delim);
+
   // random class
   class Random {
     public:
@@ -84,6 +87,7 @@ namespace Utils
   {
     // properties and constructor
     int max, cur;
+    Timer() : max(1), cur(1) {}
     Timer(int max) : cur(max), max(max) {}
 
     // reset the timer

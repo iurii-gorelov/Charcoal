@@ -38,3 +38,11 @@ int Utils::decay[16] {
 
 // tiiiiiiicks
 int Utils::ticks = 0;
+
+std::pair<string, string> Utils::Split(string str, char delim)
+{
+  int pos = str.find(delim);
+  if (pos == string::npos)
+    return std::make_pair(str, "");
+  return std::make_pair(str.substr(0, pos), str.substr(pos + 1));
+}

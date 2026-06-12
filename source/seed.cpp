@@ -2,6 +2,7 @@
 #include "scene.h"
 #include <string>
 #include <sstream>
+#include "game/game.h"
 
 DeclareScene(Seed);
 
@@ -21,7 +22,7 @@ static void Update(void) {
       ss >> seed;
       waitForInput = false;
     }
-    else if (cl::JustPressed<cl::KEY_LEFT>()) {
+    else if (cl::JustPressed<cl::KEY_BACKSPACE>()) {
       if (!inputBuffer.empty()) inputBuffer.pop_back();
     }
     else if (cl::JustPressed<'0'>()) inputBuffer += '0';
@@ -56,6 +57,7 @@ static void Update(void) {
     cl::Write(display, bx + 2, by + 2);
   }
   else {
+    Game::CreateWorld(seed);
     Scene::Switch("Game");
   }
 }

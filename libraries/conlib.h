@@ -90,6 +90,8 @@ namespace ConLib {
   const int KEY_RIGHT = 0x27;
   const int KEY_UP = 0x26;
   const int KEY_DOWN = 0x28;
+  const int KEY_BACKSPACE = 0x08;
+  const int KEY_TAB = 0x09;
 
 
   // CURSOR FUNCTIONS

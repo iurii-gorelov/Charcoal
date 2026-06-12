@@ -1,0 +1,19 @@
+# Format:
+#
+# Common Property Format:
+#   id/property: value
+#
+# Properties:
+#   id/name: str
+#     Name of the item
+#
+#   Wand Properties:
+#     id/wand/damage: num
+#     id/wand/power: num
+#     id/wand/projs: num
+
+# [Item] Wand 1
+0/name: "Wand 1"
+0/wand/damage: 1
+0/wand/power: 5
+0/wand/projs: 1

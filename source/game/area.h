@@ -1,10 +1,23 @@
 #pragma once
 #include "../define.h"
 #include "../utils.h"
-#include "object.h"
+#include "info.h"
+#include "entity.h"
 
 // constants
-#define DAY_LENGTH ((10 * 60 * 60))
+#define DAY_LENGTH ((2 * 60 * 60))
+#define TIME_DAWN  ((10 * 60))
+
+// block object
+struct Block {
+  uchar  id;
+  uchar  hp;
+  ushort ex;
+};
+
+// light object
+struct Light
+  { v2s pos; float scalar; };
 
 // class for some kind of location with objects etc
 class Area
@@ -15,12 +28,12 @@ class Area
     // current state
     v2s camera = {0, 0};
     ulong time = 0;
-    float lightScalar = 10000;
+    float lightScalar = 1;
     
     // generation properties
     v2s size;
     int floorColor;
-    int outsideRender;
+    Block outRenderBlock;
     v2s spawnPoint;
 
     // its own random
@@ -29,44 +42,86 @@ class Area
     // blocks and entities
     vec<Block> blocks;
     vec<uptr<Entity>> entities;
-    vec<std::pair<v2s, char>> lights;
+    vec<Light> lights;
 
   // methods
   public:
 
-    // constants
-    static const int OR_BLACK = 0;
-    static const int OR_SEA = 1;
+    // all generators
+    void GenerateIsland(void);
+
+    // camera transform
+    v2s ToWorld(v2s pos) { return pos + camera - v2s(cl::Width() / 2, cl::Height() / 2); }
+    v2s ToScreen(v2s pos) { return pos - camera + v2s(cl::Width() / 2, cl::Height() / 2); }
+
+    // get time scalar
+    float TimeScalar(void) { return time % DAY_LENGTH / DAY_LENGTH; }
 
     // put a block
-    void Place(int id, int x, int y)
-    {
-      // check bounds
+    void BlockPut(int id, int x, int y) {
       if (x < 0 || x >= size.x || y < 0 || y >= size.y)
         return;
-
-      // set the block
       blocks[x + y * size.x].id = id;
+      blocks[x + y * size.x].hp = Info::blocks[id].hp;
+    }
+
+    // by name
+    void BlockPut(string name, int x, int y)
+      { BlockPut(Info::Block::ids[name], x, y); }
+
+    // render the block
+    void BlockRender(Block& block, v2s spos, v2s wpos)
+    {  
+      // get the info
+      Info::Block& info = Info::blocks[block.id];
+
+      // render the water
+      if (info.name == "water") {
+        int fg = info.fg, bg = info.bg;
+        if (ut::ticks / 4 % 8 == (wpos.x + wpos.y + 9999) % 8)
+          std::swap(fg, bg);
+        cl::Put(info.character, spos.x, spos.y, fg, bg);
+      }
+
+      // render the fireplace
+      else if (info.name == "fireplace")
+        cl::Put(info.character, spos.x, spos.y,
+          ut::ticks / 6 % 2 ? 0xc : 0x4, 0xff);
+
+      // render usual block
+      else
+        cl::Put(info.character, spos.x, spos.y,
+          info.fg < 16 ? info.fg : 0xff,
+          info.bg < 16 ? info.bg : 0xff);
+    }
+
+    // create a light
+    Light* LightCreate(v2s pos, float scalar) {
+      lights.resize(lights.size() + 1);
+      Light& light = lights.back();
+      light.pos = pos;
+      light.scalar = scalar;
+      return &light;
     }
 
     // spawn an entity
-    void Spawn(Entity* ent, int x, int y) {
-      ent->pos = v2s(x, y);
-      entities.push_back(uptr<Entity>(ent));
-    }
-
-    // block link
-    Block& BlockAt(int x, int y) {
-      return blocks[x + y * size.x];
+    void EntityAdd(Entity* entity) {
+      entities.push_back(uptr<Entity>(entity));
     }
 
     // update current area
     void Update(void)
     {
       // update all the entities
-      for (auto& entity : entities) {
-        entity->Behave(this);
-      }
+      for (auto& entity : entities)
+        entity->Behave();
+
+      // dawn and sunset times
+      uint daytime = time % DAY_LENGTH;
+      if (daytime < TIME_DAWN)
+        lightScalar = 2 + 4.0 * daytime / TIME_DAWN;
+      else if (daytime >= DAY_LENGTH / 2 && daytime < DAY_LENGTH / 2 + TIME_DAWN)
+        lightScalar = 2 + 4 * (1 - scast<float>(daytime - DAY_LENGTH / 2) / TIME_DAWN);
 
       // increment the time
       time++;
@@ -79,23 +134,20 @@ class Area
       cl::Fill(' ', 0, 0, cl::Width(), cl::Height(), 0x0, floorColor);
 
       // render the blocks
-      for (int i = 0; i < cl::Width() * cl::Height(); i++)
-      {
-        // get the coords
-        int x = i % cl::Width() + camera.x - cl::Width() / 2;
-        int y = i / cl::Width() + camera.y - cl::Height() / 2;
+      for (int sx = 0; sx < cl::Width(); sx++) {
+        for (int sy = 0; sy < cl::Height(); sy++)
+        {
+          // get the world coords
+          v2s wpos = ToWorld(v2s(sx, sy));
 
-        // draw the block
-        if (!(x < 0 || x >= size.x || y < 0 || y >= size.y))
-          blocks[x + y * size.x].Render(i % cl::Width(), i / cl::Width());
-        
-        // outside render mode
-        else if (outsideRender == OR_BLACK)
-          cl::Put(' ', i % cl::Width(), i / cl::Width(), 0x0, 0x0);
-
-        // outside render mode
-        else if (outsideRender == OR_SEA)
-          Block::RenderWater(i % cl::Width(), i / cl::Width(), x, y);
+          // draw the block
+          if (!(wpos.x < 0 || wpos.x >= size.x || wpos.y < 0 || wpos.y >= size.y))
+            BlockRender(blocks[wpos.x + wpos.y * size.x], v2s(sx, sy), wpos);
+          
+          // outside render mode
+          else
+            BlockRender(outRenderBlock, v2s(sx, sy), wpos);
+        }
       }
 
       // render all the entities
@@ -106,6 +158,7 @@ class Area
 
       // render light mask
       vec<float> lightMask(cl::Width() * cl::Height(), 0);
+      float lcubed = lightScalar * lightScalar * lightScalar;
 
       // for each point on the screen
       for (int x = 0; x < cl::Width(); x++) {
@@ -118,8 +171,8 @@ class Area
 
           // try find light
           for (auto& light : lights) {
-            float sqdist = (v2s(wx, wy) - light.first).LengthSq();
-            int lightsq = light.second * light.second * lightScalar;
+            float sqdist = (v2s(wx, wy) - light.pos).LengthSq();
+            int lightsq = light.scalar * lcubed;
             
             // break if too far
             if (sqdist > lightsq)
@@ -127,6 +180,10 @@ class Area
 
             // add to the mask
             lightMask[lmpos] += 1 - sqdist / lightsq;
+
+            // optimization
+            if (lightMask[lmpos] > 0.7)
+              break;
           }
         }
       }
@@ -135,16 +192,21 @@ class Area
       for (int x = 0; x < cl::Width(); x++) {
         for (int y = 0; y < cl::Height(); y++) {
           float lm = lightMask[x + y * cl::Width()];
-          if (lm < 0.35)
-            cl::Put('a', x, y, 0x0);
+          
+          // pitch black
           if (lm == 0)
             cl::AttrAt(x, y) = 0;
-          else if (lm < 0.7)
-            cl::AttrAt(x, y) = (Utils::decay[(cl::AttrAt(x, y) & 0xf0) >> 4] << 4) | (Utils::decay[cl::AttrAt(x, y) & 0x0f]);
+          
+          // pre pitch black state
+          else if (lm < 0.35)
+            cl::Put('a', x, y, 0x0);
+          
+          // color decay (works as for self and as for the pre pitch black state)
+          if (lm < 0.7)
+            cl::AttrAt(x, y) =
+              (Utils::decay[(cl::AttrAt(x, y) & 0xf0) >> 4] << 4) |
+              (Utils::decay[cl::AttrAt(x, y) & 0x0f]);
         }
       }
     }
-
-    // all generators
-    void GenerateIsland(void);
 };

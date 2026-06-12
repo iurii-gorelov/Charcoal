@@ -1,12 +1,13 @@
 #include "area.h"
+#include "entity.h"
 
 // script for generating an island
 void Area::GenerateIsland(void)
 {
   // base props
-  rand.seed = 123456;
+  // rand.seed = 123456;
   floorColor = 0xa;
-  outsideRender = OR_SEA;
+  outRenderBlock.id = Info::Block::ids["water"];
 
   // set the size
   size.x = size.y = 256;
@@ -15,11 +16,9 @@ void Area::GenerateIsland(void)
   // generate the grass
   for (int i = 0; i < size.Area(); i++)
     if (rand.Chance(0.1))
-      Place(Block::GRASS, i % size.x, i / size.x);
+      BlockPut("grass", i % size.x, i / size.x);
     else if (rand.Chance(0.02))
-      Place(Block::FLOWER, i % size.x, i / size.x);
-    else if (rand.Chance(0.02))
-      Place(Block::FIREPLACE, i % size.x, i / size.x);
+      BlockPut("flower", i % size.x, i / size.x);
 
   // generate the trees
   for (int i = 0; i < size.Area(); i++)
@@ -43,7 +42,7 @@ void Area::GenerateIsland(void)
       for (int dx = -radius; dx <= radius; dx++)
         for (int dy = -radius; dy <= radius; dy++)
           if (dx * dx + dy * dy <= radius * radius && rand.Chance(0.8))
-            Place(Block::TREE, center.x + dx, center.y + dy);
+            BlockPut("tree", center.x + dx, center.y + dy);
     }
   }
 
@@ -62,7 +61,7 @@ void Area::GenerateIsland(void)
       v2s pos =
         v2s(i % size.x, i / size.x) +
         rand.SqrPos(4);
-      Place(Block::ROCK, pos.x, pos.y);
+      BlockPut("rock", pos.x, pos.y);
     }
   }
 
@@ -71,24 +70,21 @@ void Area::GenerateIsland(void)
     for (int y = 0; y < size.y; y++) {
       if (x < 1 || x >= size.x - 1 || y < 1 || y >= size.y - 1)
         if (rand.Chance(0.65))
-          Place(Block::WATER, x, y);
+          BlockPut("water", x, y);
       if (x < 2 || x >= size.x - 2 || y < 2 || y >= size.y - 2)
         if (rand.Chance(0.3))
-          Place(Block::WATER, x, y);
+          BlockPut("water", x, y);
       if (x < 3 || x >= size.x - 3 || y < 3 || y >= size.y - 3)
         if (rand.Chance(0.05))
-          Place(Block::WATER, x, y);
+          BlockPut("water", x, y);
     }
   }
 
-  // test light
-  lights.push_back(std::make_pair(camera, 10));
-
   // find place to spawn the player
-  for (int i = 0; i < size.Area(); i += size.x / 16)
-    if (blocks[i].id == Block::AIR && rand.Chance(0.001))
-      spawnPoint = v2s(i % size.x, i / size.x);
+  // for (int i = 0; i < size.Area(); i += size.x / 16)
+  //   if (blocks[i].id == "air" && rand.Chance(0.001))
+  //     spawnPoint = v2s(i % size.x, i / size.x);
 
   // create the player
-  Spawn(new Player(), spawnPoint.x, spawnPoint.y);
+  EntityAdd(new Player(this, v2s(20, 20)));
 }

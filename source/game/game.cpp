@@ -1,36 +1,33 @@
 #include "game.h"
+#include "info.h"
 
 // declare the scene
 DeclareScene(Game);
 
 // initialize statics
-vec<Object::Info> Object::info;
 vec<uptr<Area>> Game::areas;
 Area* Game::curArea = nullptr;
+
+// initialize infoes
+vec<Info::Block>  Info::blocks;
+vec<Info::Entity> Info::entities;
+// vec<Item>   Info::items;
+umap<string, uchar> Info::Block::ids;
+umap<string, uchar> Info::Entity::ids;
 
 // initialize the scene
 static void Init(void)
 {
   // parse the object info
-  Object::ParseInfo(Res::Get<Res::UMF>("objects"));
-
-  // generate a test world
-  Game::CreateWorld();
+  Info::Block::Parse(Res::Get<Res::UMF>("blocks"));
+  Info::Entity::Parse(Res::Get<Res::UMF>("entities"));
+  // Object::ParseInfo(Res::Get<Res::UMF>("objects"));
+  // Item::ParseInfo(Res::Get<Res::UMF>("items"));
 }
 
 // update the scene
 static void Update(void)
 {
-  // move the camera
-  // if (cl::Pressed(cl::KEY_UP) && ut::ticks % 2)
-  //   Game::curArea->camera.y--;
-  // else if (cl::Pressed(cl::KEY_DOWN) && ut::ticks % 2)
-  //   Game::curArea->camera.y++;
-  // if (cl::Pressed(cl::KEY_LEFT) && ut::ticks % 2)
-  //   Game::curArea->camera.x--;
-  // else if (cl::Pressed(cl::KEY_RIGHT) && ut::ticks % 2)
-  //   Game::curArea->camera.x++;
-
   // quit to the menu
   if (cl::JustPressed<cl::KEY_ESC>())
     Scene::Switch("Menu");
@@ -44,9 +41,10 @@ static void Update(void)
 }
 
 // temp
-void Game::CreateWorld(void) {
+void Game::CreateWorld(int seed) {
   Game::areas.push_back(std::make_unique<Area>());
   Area* area = Game::areas.back().get();
+  area->rand.seed = seed;
   area->GenerateIsland();
   Game::curArea = area;
 }

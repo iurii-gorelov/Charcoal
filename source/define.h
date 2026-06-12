@@ -44,3 +44,8 @@ template <typename I, typename T> using
 #define singleton(type, name) \
   static type& name() \
     { static type name##_; return name##_; }
+
+// debugger
+#define titledbg(title) \
+  cl::Title(title); \
+  cl::Sleep(1000);
