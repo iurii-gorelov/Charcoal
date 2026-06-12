@@ -10,3 +10,9 @@
 0/charinfo:  "n0"
 0/collision: 1
 0/health:    6
+
+# Projectile
+1/name:      "projectile"
+1/charinfo:  "h1"
+1/collision: 0
+1/health:    0

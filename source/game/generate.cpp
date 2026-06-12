@@ -5,7 +5,6 @@
 void Area::GenerateIsland(void)
 {
   // base props
-  // rand.seed = 123456;
   floorColor = 0xa;
   outRenderBlock.id = Info::Block::ids["water"];
 
@@ -86,5 +85,5 @@ void Area::GenerateIsland(void)
   //     spawnPoint = v2s(i % size.x, i / size.x);
 
   // create the player
-  EntityAdd(new Player(this, v2s(20, 20)));
+  EntityAdd(player = new Player(this, v2s(20, 20)));
 }

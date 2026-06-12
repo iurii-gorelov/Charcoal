@@ -9,15 +9,15 @@
     "README.md": true,
     "docs": true,
     ".vscode": true,
-    ".gitignore": true,
-    "main.exe": true
+    "main.exe": true,
+    ".gitignore": true
   },
   "hide-files.files": [
     ".gitattributes",
     "README.md",
     "docs",
     ".vscode",
-    ".gitignore",
-    "main.exe"
+    "main.exe",
+    ".gitignore"
   ]
 }

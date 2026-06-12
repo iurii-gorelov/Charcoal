@@ -134,11 +134,62 @@ namespace Info
   };
 
   // class for item infos
-  struct Item {
-    uchar id;
+  struct Item
+  {
+    // id map
+    static umap<string, uchar> ids;
+    
+    // the properties
+    string title;
     string name;
+    uchar type;
+    int useTimer;
+
+    // wand properties
     double wandDamage;
     double wandPower;
     double wandProjs;
+
+    // the parser
+    static void Parse(Res::UMF umf)
+    {
+      // resize both
+      items.resize(256);
+      ids.reserve(256);
+
+      // parse the fields
+      for (auto& field : umf)
+      {
+        // separate id and title
+        std::pair<string, string> idTitle =
+          Utils::Split(field.first, '/');
+
+        // get the id
+        uchar id = std::stoi(idTitle.first);
+        string sval = field.second.asStr;
+        double dval = field.second.asNum;
+
+        // title
+        if (idTitle.second == "name")
+          ids[sval] = id,
+          items[id].name = sval;
+
+        // title and type
+        else if (idTitle.second == "title")
+          items[id].title = sval;
+        else if (idTitle.second == "type")
+          items[id].type = dval;
+        else if (idTitle.second == "usetimer")
+          items[id].useTimer = dval;
+
+        // wand stuff
+        else if (idTitle.second == "wand/damage")
+          items[id].wandDamage = dval;
+        else if (idTitle.second == "wand/power")
+          items[id].wandPower = dval;
+        else if (idTitle.second == "wand/projs")
+          items[id].wandProjs = dval;
+      }
+    }
   };
 }

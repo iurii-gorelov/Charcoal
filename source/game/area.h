@@ -43,6 +43,7 @@ class Area
     vec<Block> blocks;
     vec<uptr<Entity>> entities;
     vec<Light> lights;
+    Player* player;
 
   // methods
   public:
@@ -57,9 +58,12 @@ class Area
     // get time scalar
     float TimeScalar(void) { return time % DAY_LENGTH / DAY_LENGTH; }
 
+    // check if inside the area
+    bool Inside(v2s pos) { return pos.x >= 0 && pos.x < size.x && pos.y >= 0 && pos.y < size.y; }
+
     // put a block
     void BlockPut(int id, int x, int y) {
-      if (x < 0 || x >= size.x || y < 0 || y >= size.y)
+      if (!Inside(v2s(x, y)))
         return;
       blocks[x + y * size.x].id = id;
       blocks[x + y * size.x].hp = Info::blocks[id].hp;
@@ -109,12 +113,22 @@ class Area
       entities.push_back(uptr<Entity>(entity));
     }
 
+    // remove an entity
+    void EntityRemove(Entity* entity) {
+      for (int i = 0; i < entities.size(); i++) {
+        if (entities[i].get() == entity) {
+          entities.erase(entities.begin() + i);
+          break;
+        }
+      }
+    }
+
     // update current area
     void Update(void)
     {
       // update all the entities
-      for (auto& entity : entities)
-        entity->Behave();
+      for (int i = 0; i < entities.size(); i++)
+        entities[i]->Behave();
 
       // dawn and sunset times
       uint daytime = time % DAY_LENGTH;

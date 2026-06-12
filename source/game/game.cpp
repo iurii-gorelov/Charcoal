@@ -11,9 +11,15 @@ Area* Game::curArea = nullptr;
 // initialize infoes
 vec<Info::Block>  Info::blocks;
 vec<Info::Entity> Info::entities;
-// vec<Item>   Info::items;
+vec<Info::Item>   Info::items;
 umap<string, uchar> Info::Block::ids;
 umap<string, uchar> Info::Entity::ids;
+umap<string, uchar> Info::Item::ids;
+
+// player's inventory
+umap<uchar, uchar> Game::inventory;
+uchar Game::hotbar[HOTBAR_SIZE];
+uchar Game::selectedSlot;
 
 // initialize the scene
 static void Init(void)
@@ -21,8 +27,7 @@ static void Init(void)
   // parse the object info
   Info::Block::Parse(Res::Get<Res::UMF>("blocks"));
   Info::Entity::Parse(Res::Get<Res::UMF>("entities"));
-  // Object::ParseInfo(Res::Get<Res::UMF>("objects"));
-  // Item::ParseInfo(Res::Get<Res::UMF>("items"));
+  Info::Item::Parse(Res::Get<Res::UMF>("items"));
 }
 
 // update the scene
@@ -47,4 +52,7 @@ void Game::CreateWorld(int seed) {
   area->rand.seed = seed;
   area->GenerateIsland();
   Game::curArea = area;
+  hotbar[0] = 1;
+  inventory[1] = 1;
+  area->player->SelectItem(0);
 }

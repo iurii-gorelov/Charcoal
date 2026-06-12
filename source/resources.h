@@ -133,6 +133,9 @@ class Res
       // load all the resources
       for (auto& pair : *map)
         Load(pair.first, pair.second.asStr);
+
+      // map
+      delete map;
     }
 
     // get a resource

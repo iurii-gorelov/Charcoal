@@ -2,7 +2,6 @@
 #include "../define.h"
 #include "../utils.h"
 #include "../resources.h"
-#include "item.h"
 #include "info.h"
 
 // forward declaration
@@ -22,6 +21,7 @@ class Entity
     uchar health;
 
     // constructor
+    virtual ~Entity() {}
     Entity(void) = default;
     Entity(Area* area, v2s pos, uchar id) : area(area), pos(pos), id(id) {
       Info::Entity& info = Info::entities[id];
@@ -38,7 +38,7 @@ class Entity
     void TryMove(int dirX, int dirY);
     void ApplyDamage(int damage);
     virtual void Behave(void) = 0;
-    virtual void Death(void) = 0;
+    virtual void Death(void);
 };
 
 // player object
@@ -49,6 +49,7 @@ class Player : public Entity
 
     // timers
     ut::Timer moveTimer;
+    ut::Timer useTimer;
     Light* light;
 
   // public stuff
@@ -60,19 +61,33 @@ class Player : public Entity
     // override the behaviour
     void Behave(void) override;
     void Death(void) override;
+
+    // it's own behavior
+    void UseItem(v2s dir);
+    void SelectItem(int slot);
 };
 
+// projectile class
 class Projectile : public Entity
 {
   // data
   private:
     Entity* owner;
     int power;
+    v2s direction;
 
   // public
   public:
     
-    // Projectile(Area* area, v2s pos, Entity* owner, Info::Item& wand);
+    // constructor
+    Projectile(Area* area, v2s pos, v2s dir, Entity* own, Info::Item& wand)  :
+      Entity(area, pos, Info::Entity::ids["projectile"]),
+      owner(own),
+      power(wand.wandPower),
+      direction(dir) {
+      health = wand.wandDamage;
+    }
 
-  
+    // override the behaviour
+    void Behave(void) override;
 };

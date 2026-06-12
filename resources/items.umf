@@ -6,14 +6,25 @@
 # Properties:
 #   id/name: str
 #     Name of the item
+#   id/type: num 
+#     1: wand
 #
 #   Wand Properties:
 #     id/wand/damage: num
 #     id/wand/power: num
 #     id/wand/projs: num
 
-# [Item] Wand 1
-0/name: "Wand 1"
-0/wand/damage: 1
-0/wand/power: 5
-0/wand/projs: 1
+# Nothing
+0/name: "nothing"
+0/title": "-"
+0/type: 0
+0/usetimer: 1
+
+# Wand 1
+1/name: "wand1"
+1/title": "Charcoal Wand"
+1/type: 1
+1/usetimer: 10
+1/wand/damage: 1
+1/wand/power: 8
+1/wand/projs: 1
