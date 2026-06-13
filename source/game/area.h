@@ -3,6 +3,7 @@
 #include "../utils.h"
 #include "info.h"
 #include "entity.h"
+#include "../scene.h"
 #include <algorithm>
 
 // constants
@@ -209,6 +210,10 @@ class Area
 
       // increment the time
       time++;
+
+      // you win
+      if (time == DAY_LENGTH)
+        Scene::Switch("YouWin");
     }
 
     // renderer the area
