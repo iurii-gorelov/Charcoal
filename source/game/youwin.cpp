@@ -1,10 +1,8 @@
 #include "../scene.h"
 
-// declare scene
 DeclareScene(YouWin);
 SC_DEFAULT_INIT;
 
-// update function
 static void Update(void) {
   if (cl::JustPressed<cl::KEY_ESC>())
     Scene::Switch("Game");

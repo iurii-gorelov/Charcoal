@@ -5,26 +5,20 @@
 #include "../define.h"
 #include "area.h"
 
-// hotbar constant
 #define HOTBAR_SIZE 4
 
-// global namespace for the game
 namespace Game
 {
-  // absolutely all areas here
-  extern uptr<Area> curArea;
+    extern uptr<Area> curArea;
 
-  // player's inventory
-  extern vec<std::pair<uchar, uchar>> inventory;
+    extern vec<std::pair<uchar, uchar>> inventory;
   extern uchar selectedSlot;
   extern bool gameOver;
 
-  // create a new world
-  void CreateWorld(int seed);
+    void CreateWorld(int seed);
   void DeleteWorld(void);
 
-  // item stuff
-  void AddItem(uchar id);
+    void AddItem(uchar id);
   void RemoveItem(uchar id);
   pair<uchar, uchar>* GetItem(uchar id);
 }

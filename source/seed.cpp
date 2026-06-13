@@ -40,8 +40,7 @@ static void Update(void) {
       return;
     }
     cl::Fill(' ', 0, 0, cl::Width(), cl::Height(), 0x0F, 0x00);
-    // background
-    for (int y = (ut::ticks / 10) % 4 - 3; y < cl::Height(); y += 4) {
+        for (int y = (ut::ticks / 10) % 4 - 3; y < cl::Height(); y += 4) {
       for (int x = (ut::ticks / 10) % 9 - cl::Height() - 8; x < cl::Width(); x += 9) {
         vec<string> colors = {"\f8", "\b8\f0", "\f7", "\bf\f0"};
         for (int i = 0; i < 4; i++)
@@ -49,8 +48,7 @@ static void Update(void) {
       }
     }
 
-    // clear place for the menu
-    int bx = cl::Width() / 2 - 15, by = cl::Height() / 2 - 2;
+        int bx = cl::Width() / 2 - 15, by = cl::Height() / 2 - 2;
     cl::Fill(' ', bx, by, 30, 5, 0x0F, 0x00);
     cl::Write("\f7ENTER SEED", bx + 2, by + 1);
     std::string display = inputBuffer;

@@ -1,55 +1,44 @@
 #pragma once
 #include "define.h"
 
-// scene flags
 #define SC_DEFAULT_INIT static void Init(void) {}
 #define SC_DEFAULT_UPDATE static void Update(void) {}
 
-// shortcut for the scene class
 #define DeclareScene(name) \
   static void Init(); \
   static void Update(); \
   static Scene scene(#name, Init, Update);
 
 
-// class that defines a scene
 class Scene
 {
-  // private properties
-  private:
+    private:
     
-    // collection of all the scenes and current scene
-    using SceneMap = umap<string, Scene*>;
+        using SceneMap = umap<string, Scene*>;
     singleton(SceneMap, Scenes);
     static Scene* sceneptr;
 
-    // callback functions
-    callback init;
+        callback init;
     callback update;
 
-  // public functions
-  public:
+    public:
 
-    // constructor
-    Scene(string name, callback init, callback update) {
+        Scene(string name, callback init, callback update) {
       Scenes()[name] = this;
       this->init = init;
       this->update = update;
     }
 
-    // init all the scenes
-    static void InitAll() {
+        static void InitAll() {
       for (auto& scene : Scenes())
         scene.second->init();
     }
 
-    // call update on current scene
-    static void UpdateCurrent() {
+        static void UpdateCurrent() {
       sceneptr->update();
     }
 
-    // switch the scene
-    static void Switch(string name) {
+        static void Switch(string name) {
       sceneptr = Scenes()[name];
     }
 };

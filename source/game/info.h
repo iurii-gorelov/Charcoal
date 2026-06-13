@@ -2,151 +2,116 @@
 #include "../define.h"
 #include "../resources.h"
 
-// namespace for all the info classes
 namespace Info
 {
-  // forward declarations
-  struct Block;
+    struct Block;
   struct Entity;
   struct Item;
 
-  // containers
-  extern vec<Block>  blocks;
+    extern vec<Block>  blocks;
   extern vec<Entity> entities;
   extern vec<Item>   items;
 
-  // class for block infos
-  struct Block
+    struct Block
   {
-    // id map
-    static umap<string, uchar> ids;
+        static umap<string, uchar> ids;
 
-    // the properties
-    string name;
+        string name;
     string drop = "";
     uchar hp;
     uchar light = 0;
 
-    // collision
-    bool entCol;
+        bool entCol;
     bool projCol;
     
-    // char info
-    char character;
+        char character;
     char fg;
     char bg;
 
-    // the parser
-    static void Parse(Res::UMF umf)
+        static void Parse(Res::UMF umf)
     {
-      // resize both
-      blocks.resize(256);
+            blocks.resize(256);
       ids.reserve(256);
 
-      // parse the fields
-      for (auto& field : umf)
+            for (auto& field : umf)
       {
-        // separate id and title
-        std::pair<string, string> idTitle =
+                std::pair<string, string> idTitle =
           Utils::Split(field.first, '/');
 
-        // get the id
-        uchar id = std::stoi(idTitle.first);
+                uchar id = std::stoi(idTitle.first);
         string sval = field.second.asStr;
         double dval = field.second.asNum;
 
-        // title
-        if (idTitle.second == "name")
+                if (idTitle.second == "name")
           ids[sval] = id,
           blocks[id].name = sval;
 
-        // character info
-        else if (idTitle.second == "charinfo")
+                else if (idTitle.second == "charinfo")
           blocks[id].character = sval[0],
           blocks[id].fg = Utils::Chtoi(sval[1]),
           blocks[id].bg = Utils::Chtoi(sval[2]);
 
-        // collision data
-        else if (idTitle.second == "collision")
+                else if (idTitle.second == "collision")
           blocks[id].entCol = sval[0] == '1',
           blocks[id].projCol = sval[1] == '1';
 
-        // health
-        else if (idTitle.second == "health")
+                else if (idTitle.second == "health")
           blocks[id].hp = dval;
 
-        // drop
-        else if (idTitle.second == "drop")
+                else if (idTitle.second == "drop")
           blocks[id].drop = sval;
 
-        // light
-        else if (idTitle.second == "light")
+                else if (idTitle.second == "light")
           blocks[id].light = dval;
       }
     }
   };
 
-  // class for entity infos
-  struct Entity
+    struct Entity
   {
-    // id map
-    static umap<string, uchar> ids;
+        static umap<string, uchar> ids;
 
-    // the properties
-    string name;
+        string name;
     uchar hp;
     string drop = "";
 
-    // collision
-    bool collidable;
+        bool collidable;
     
-    // char info
-    char character;
+        char character;
     char fgcolor;
 
-    // enemy properties
-    int damage;
+        int damage;
     int speed;
 
-    // the parser
-    static void Parse(Res::UMF umf)
+        static void Parse(Res::UMF umf)
     {
-      // resize both
-      entities.resize(256);
+            entities.resize(256);
       ids.reserve(256);
 
-      // parse the fields
-      for (auto& field : umf)
+            for (auto& field : umf)
       {
-        // separate id and title
-        std::pair<string, string> idTitle =
+                std::pair<string, string> idTitle =
           Utils::Split(field.first, '/');
 
-        // get the id
-        uchar id = std::stoi(idTitle.first);
+                uchar id = std::stoi(idTitle.first);
         string sval = field.second.asStr;
         double dval = field.second.asNum;
 
-        // title
-        if (idTitle.second == "name")
+                if (idTitle.second == "name")
           ids[sval] = id,
           entities[id].name = sval;
 
-        // character info
-        else if (idTitle.second == "charinfo")
+                else if (idTitle.second == "charinfo")
           entities[id].character = sval[0],
           entities[id].fgcolor = Utils::Chtoi(sval[1]);
 
-        // collision data
-        else if (idTitle.second == "collision")
+                else if (idTitle.second == "collision")
           entities[id].collidable = sval[0] == '1';
 
-        // health
-        else if (idTitle.second == "health")
+                else if (idTitle.second == "health")
           entities[id].hp = dval;
 
-        // enemy data
-        else if (idTitle.second == "damage")
+                else if (idTitle.second == "damage")
           entities[id].damage = dval;
         else if (idTitle.second == "speed")
           entities[id].speed = dval;
@@ -157,68 +122,54 @@ namespace Info
     }
   };
 
-  // class for item infos
-  struct Item
+    struct Item
   {
-    // id map
-    static umap<string, uchar> ids;
+        static umap<string, uchar> ids;
     
-    // the properties
-    string title;
+        string title;
     string name;
     uchar type;
     int useTimer = 1;
 
-    // wand properties
-    double wandDamage;
+        double wandDamage;
     double wandPower;
     double wandProjs;
 
-    // food properties
-    int food;
+        int food;
 
-    // the parser
-    static void Parse(Res::UMF umf)
+        static void Parse(Res::UMF umf)
     {
-      // resize both
-      items.resize(256);
+            items.resize(256);
       ids.reserve(256);
 
-      // parse the fields
-      for (auto& field : umf)
+            for (auto& field : umf)
       {
-        // separate id and title
-        std::pair<string, string> idTitle =
+                std::pair<string, string> idTitle =
           Utils::Split(field.first, '/');
 
-        // get the id
-        uchar id = std::stoi(idTitle.first);
+                uchar id = std::stoi(idTitle.first);
         string sval = field.second.asStr;
         double dval = field.second.asNum;
 
-        // title
-        if (idTitle.second == "name")
+                if (idTitle.second == "name")
           ids[sval] = id,
           items[id].name = sval;
 
-        // title and type
-        else if (idTitle.second == "title")
+                else if (idTitle.second == "title")
           items[id].title = sval;
         else if (idTitle.second == "type")
           items[id].type = dval;
         else if (idTitle.second == "usetimer")
           items[id].useTimer = dval;
 
-        // wand stuff
-        else if (idTitle.second == "wand/damage")
+                else if (idTitle.second == "wand/damage")
           items[id].wandDamage = dval;
         else if (idTitle.second == "wand/power")
           items[id].wandPower = dval;
         else if (idTitle.second == "wand/projs")
           items[id].wandProjs = dval;
 
-        // food stuff
-        else if (idTitle.second == "food")
+                else if (idTitle.second == "food")
           items[id].food = dval;
       }
     }
