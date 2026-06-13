@@ -3,9 +3,10 @@
 #include "../utils.h"
 #include "info.h"
 #include "entity.h"
+#include <algorithm>
 
 // constants
-#define DAY_LENGTH ((2 * 60 * 60))
+#define DAY_LENGTH ((6 * 60 * 60))
 #define TIME_DAWN  ((10 * 60))
 #define RANDOM_PING_COUNT 1
 
@@ -234,6 +235,8 @@ class Area
       }
 
       // render all the entities
+      std::sort(entities.begin(), entities.end(),
+        [](auto& a, auto& b) { return a->id < b->id; });
       for (auto& entity : entities)
         entity->Render(
           entity->pos.x - camera.x + cl::Width() / 2,
@@ -294,20 +297,26 @@ class Area
       else if (entities.size() < 128)
       {
         // try to put an enemy
-        if (rand.Chance(0.1)) {
+        if (rand.Chance(0.05)) {
           if (time > DAY_LENGTH / 2 && LightLevel(v2s(x, y)) == 0)
             EntityAdd(new Enemy(this, v2s(x, y), "demon"));
           return;
         }
 
         // try to put a dog
-        if (time < DAY_LENGTH / 2 && rand.Chance(0.2)) {
+        if (time < DAY_LENGTH / 2 && rand.Chance(0.1)) {
           EntityAdd(new Enemy(this, v2s(x, y), "dog"));
           return;
         }
 
+        // try to put a dog
+        if (time < DAY_LENGTH / 2 && rand.Chance(0.1)) {
+          EntityAdd(new Enemy(this, v2s(x, y), "sheep"));
+          return;
+        }
+
         // try to put a priest
-        if (rand.Chance(0.03)) {
+        if (rand.Chance(0.02)) {
           if (time > DAY_LENGTH / 2 && LightLevel(v2s(x, y)) == 0)
             EntityAdd(new Enemy(this, v2s(x, y), "priest"));
           return;

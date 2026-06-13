@@ -121,7 +121,7 @@ static void Update(void)
   int hbX = 4;
   int hbY = 6, hbY2 = 11;
   int maxw = cl::Width() - hbX - 11;
-  int maxh = cl::Height() - hbY2 - 4;
+  int maxh = cl::Height() - hbY2 - 5;
 
   // scrolling
   while (pointer >= maxh + scroll)
@@ -144,14 +144,14 @@ static void Update(void)
 
   // render the recipe names
   cl::Write("\ffCRAFTING", hbX, hbY - 2);
-  int index = 0;
-  for (auto& pair : recipes) {
-    string itemName = Info::items[Info::Item::ids[pair.first]].title.substr(0, maxw);
-    int itemCount = pair.second[0];
-    bool craftable = Check(pair.first);
+  for (int index = 0; index < maxh; index++) {
+    int iw = index + scroll;
+    auto pair = std::next(recipes.begin(), iw);
+    string itemName = Info::items[Info::Item::ids[pair->first]].title.substr(0, maxw);
+    int itemCount = pair->second[0];
+    bool craftable = Check(pair->first);
     cl::Write((craftable ? "\ff" : "\f8") + itemName, hbX + 2, hbY2 + index);
     cl::Write((craftable ? "\ff" : "\f8") + (" <" + std::to_string(itemCount)), hbX + maxw + 2, hbY2 + index);
-    index++;
   }
 
   // pointer

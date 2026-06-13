@@ -251,12 +251,14 @@ void Enemy::Behave(void)
     if (info.name == "demon" || info.name == "priest") {
       TryMove(dir.x, 0);
       TryMove(0, dir.y);
+      if (Info::blocks[area->blocks[pos.x + pos.y * area->size.x].id].name == "peaks")
+        ApplyDamage(2);
       moveTimer.Reset();
     }
 
     // passive
-    if (info.name == "dog") {
-      if (area->rand.Chance(0.01)) {
+    if (info.name == "dog" || info.name == "sheep") {
+      if (area->rand.Chance(0.04)) {
         dir = area->rand.SqrPos(1);
         TryMove(dir.x, 0);
         TryMove(0, dir.y);

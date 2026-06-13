@@ -20,6 +20,8 @@ void Area::GenerateIsland(void)
       BlockPut("flower", i % size.x, i / size.x);
     else if (rand.Chance(0.001))
       BlockPut("wheat", i % size.x, i / size.x);
+    else if (rand.Chance(0.005))
+      BlockPut("bones", i % size.x, i / size.x);
 
   // generate the trees
   for (int i = 0; i < size.Area(); i++)
@@ -63,9 +65,9 @@ void Area::GenerateIsland(void)
       v2s pos =
         v2s(i % size.x, i / size.x) +
         rand.SqrPos(4);
-      if (rand.Chance(0.04))
+      if (rand.Chance(0.05))
         BlockPut("gold", pos.x, pos.y);
-      else if (rand.Chance(0.011))
+      else if (rand.Chance(0.15))
         BlockPut("iron", pos.x, pos.y);
       else if (rand.Chance(0.25))
         BlockPut("coal", pos.x, pos.y);

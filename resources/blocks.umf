@@ -48,7 +48,7 @@
 
 # Sapling
 16/name: "sapling"
-16/charinfo: "l4t"
+16/charinfo: "w2t"
 16/collision: "01"
 16/health: 1
 16/drop: "sapling"
@@ -111,7 +111,7 @@
 13/collision: "11"
 13/health: 10
 13/drop: "stonebricks"
-13/toohard: 1
+
 
 # Wheat
 14/name: "wheat"
@@ -126,3 +126,32 @@
 15/collision: "01"
 15/health: 1
 15/drop: "wheatseeds"
+
+
+# Bones
+17/name: "bones"
+17/charinfo: "x7t"
+17/collision: "01"
+17/health: 1
+17/drop: "bone bone bone"
+
+# Wool
+18/name: "wool"
+18/charinfo: " 0f"
+18/collision: "11"
+18/health: 1
+18/drop: "wool"
+
+# Peaks
+19/name: "peaks"
+19/charinfo: "l8t"
+19/collision: "01"
+19/health: 7
+19/drop: "peaks"
+
+# Home
+20/name: "home"
+20/charinfo: "m0t"
+20/collision: "11"
+20/health: 10
+20/drop: "home"

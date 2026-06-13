@@ -84,7 +84,7 @@ namespace Utils
 
       // random vector
       v2s SqrPos(int radius)
-        { return v2s(Next(-radius, radius), Next(-radius, radius)); }
+        { return v2s(Next(-radius, radius + 1), Next(-radius, radius + 1)); }
   };
 
   // timer class

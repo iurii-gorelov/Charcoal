@@ -7,8 +7,9 @@ fireplace/$: 1
 fireplace/planks: 4
 fireplace/coal: 2
 
-stonebricks/$: 1
+stonebricks/$: 2
 stonebricks/cobble: 4
+stonebricks/coal: 1
 
 woodenwand/$: 1
 woodenwand/planks: 4
@@ -27,20 +28,33 @@ bread/wheat: 4
 ironbar/$: 1
 ironbar/iron: 1
 ironbar/coal: 2
-ironbar/hellflesh: 1
+ironbar/hellsoul: 1
 
 goldbar/$: 1
 goldbar/gold: 1
 goldbar/coal: 2
-goldbar/holyflesh: 1
+goldbar/unholysoul: 1
 
 ironwand/$: 1
 ironwand/ironbar: 4
-ironwand/hellflesh: 1
+ironwand/hellsoul: 1
 ironwand/stonewand: 1
 
 goldwand/$: 1
 goldwand/goldbar: 4
 goldwand/ironbar: 2
-goldwand/holyflesh: 1
+goldwand/unholysoul: 1
 goldwand/stonewand: 1
+
+burger/$: 1
+burger/bread: 1
+burger/meat: 1
+
+peaks/$: 1
+peaks/cobble: 1
+peaks/bone: 4
+
+home/$: 1
+home/planks: 16
+home/stonebricks: 4
+home/wool: 4

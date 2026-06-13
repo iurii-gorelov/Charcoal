@@ -74,8 +74,8 @@
 9/type: 2
 
 # Hell Flesh
-10/name: "hellflesh"
-10/title: "HELL FLESH"
+10/name: "hellsoul"
+10/title: "HELL SOUL"
 10/type: 0
 
 # Stone Wand
@@ -104,8 +104,8 @@
 14/food: 2
 
 # Holy Flesh
-15/name: "holyflesh"
-15/title: "HOLY FLESH"
+15/name: "unholysoul"
+15/title: "UNHOLY SOUL"
 15/type: 0
 
 # Priest Wand
@@ -132,7 +132,7 @@
 19/title: "IRON WAND"
 19/type: 1
 19/usetimer: 8
-19/wand/damage: 1
+19/wand/damage: 3
 19/wand/power: 12
 19/wand/projs: 1
 
@@ -149,3 +149,35 @@
 21/name: "sapling"
 21/title: "SAPLING"
 21/type: 2
+
+# Bone
+22/name: "bone"
+22/title: "BONE"
+22/type: 0
+
+# Wool
+23/name: "wool"
+23/title: "WOOL"
+23/type: 2
+
+# Meat
+24/name: "meat"
+24/title: "MEAT"
+24/type: 3
+24/food: 3
+
+# Burger
+25/name: "burger"
+25/title: "BURGER"
+25/type: 3
+25/food: 8
+
+# Peaks
+26/name: "peaks"
+26/title: "PEAKS"
+26/type: 2
+
+# Home
+27/name: "home"
+27/title: "SWEET HOME"
+27/type: 2
