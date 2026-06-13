@@ -15,7 +15,8 @@ static void Update(void)
 {
   // check for escape
   if (cl::JustPressed<cl::KEY_ESC>())
-    Scene::Switch("Game");
+    Scene::Switch("Game"),
+    Game::curArea->player->SelectItem(0);
   if (cl::JustPressed<'C'>())
     Scene::Switch("Crafting");
 

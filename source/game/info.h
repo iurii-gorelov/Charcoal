@@ -95,6 +95,7 @@ namespace Info
     // the properties
     string name;
     uchar hp;
+    string drop = "";
 
     // collision
     bool collidable;
@@ -102,6 +103,10 @@ namespace Info
     // char info
     char character;
     char fgcolor;
+
+    // enemy properties
+    int damage;
+    int speed;
 
     // the parser
     static void Parse(Res::UMF umf)
@@ -139,6 +144,15 @@ namespace Info
         // health
         else if (idTitle.second == "health")
           entities[id].hp = dval;
+
+        // enemy data
+        else if (idTitle.second == "damage")
+          entities[id].damage = dval;
+        else if (idTitle.second == "speed")
+          entities[id].speed = dval;
+        else if (idTitle.second == "drop")
+          entities[id].drop = sval;
+
       }
     }
   };

@@ -1,5 +1,8 @@
 #include "scene.h"
 #include "resources.h"
+#include "game/game.h"
+
+// constants
 #define MENU_START_GAME 0
 #define MENU_LOAD_GAME 1
 #define MENU_FULLSCREEN 2
@@ -51,6 +54,12 @@ static void Update(void)
   // ticker
   static char cursor = 0;
 
+  // if the game is over
+  if (Game::gameOver) {
+    Game::DeleteWorld();
+    Game::gameOver = false;
+  }
+
   // check for press
   if (cl::JustPressed<cl::KEY_DOWN>())
     cursor = (cursor + 1) % 4; 
@@ -61,8 +70,8 @@ static void Update(void)
   if (cl::JustPressed<cl::KEY_ENTER>()) {
     if (cursor == MENU_START_GAME)
       Scene::Switch("Seed");
-    else if (cursor == MENU_LOAD_GAME)
-      Scene::Switch("");
+    else if (cursor == MENU_LOAD_GAME && Game::curArea != nullptr)
+      Scene::Switch("Game");
     else if (cursor == MENU_FULLSCREEN)
       ToggleFullscreen();
     else if (cursor == MENU_QUIT)
@@ -87,7 +96,7 @@ static void Update(void)
   
   // write the text
   cl::Write("\f7NEW GAME",     bx + 3, by + MENU_START_GAME + 1);
-  cl::Write("\f7CONTINUE",     bx + 3, by + MENU_LOAD_GAME + 1);
+  cl::Write(string(Game::curArea ? "\f7" : "\f8") + "CONTINUE",     bx + 3, by + MENU_LOAD_GAME + 1);
   if (cl::FullScreen()) 
     cl::Write("\f7FULLSCREEN", bx + 3, by + MENU_FULLSCREEN + 1);
   else 

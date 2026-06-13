@@ -5,10 +5,6 @@
 #include "../utils.h"
 #include <iterator>
 
-// #define toupper(str) \
-//   std::transform(str.begin(), str.end(), str.begin(), \
-//     [](unsigned char c) { return std::toupper(c); });
-
 // declare scene
 DeclareScene(Crafting);
 SC_DEFAULT_INIT;
@@ -97,7 +93,8 @@ static void Update(void)
 
   // check for escape
   if (cl::JustPressed<cl::KEY_ESC>())
-    Scene::Switch("Game");
+    Scene::Switch("Game"),
+    Game::curArea->player->SelectItem(0);
   if (cl::JustPressed<'C'>())
     Scene::Switch("Inventory");
 
@@ -152,8 +149,8 @@ static void Update(void)
     string itemName = Info::items[Info::Item::ids[pair.first]].title.substr(0, maxw);
     int itemCount = pair.second[0];
     bool craftable = Check(pair.first);
-    cl::Write((craftable ? "\ff" : "\f7") + itemName, hbX + 2, hbY2 + index);
-    cl::Write((craftable ? "\ff" : "\f7") + (" <" + std::to_string(itemCount)), hbX + maxw + 2, hbY2 + index);
+    cl::Write((craftable ? "\ff" : "\f8") + itemName, hbX + 2, hbY2 + index);
+    cl::Write((craftable ? "\ff" : "\f8") + (" <" + std::to_string(itemCount)), hbX + maxw + 2, hbY2 + index);
     index++;
   }
 

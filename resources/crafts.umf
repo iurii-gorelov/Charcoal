@@ -9,3 +9,38 @@ fireplace/coal: 2
 
 stonebricks/$: 1
 stonebricks/cobble: 4
+
+woodenwand/$: 1
+woodenwand/planks: 4
+
+stonewand/$: 1
+stonewand/cobble: 2
+stonewand/planks: 1
+stonewand/woodenwand: 1
+
+wheatseeds/$: 4
+wheatseeds/wheat: 1
+
+bread/$: 1
+bread/wheat: 4
+
+ironbar/$: 1
+ironbar/iron: 1
+ironbar/coal: 2
+ironbar/hellflesh: 1
+
+goldbar/$: 1
+goldbar/gold: 1
+goldbar/coal: 2
+goldbar/holyflesh: 1
+
+ironwand/$: 1
+ironwand/ironbar: 4
+ironwand/hellflesh: 1
+ironwand/stonewand: 1
+
+goldwand/$: 1
+goldwand/goldbar: 4
+goldwand/ironbar: 2
+goldwand/holyflesh: 1
+goldwand/stonewand: 1

@@ -18,6 +18,8 @@ void Area::GenerateIsland(void)
       BlockPut("grass", i % size.x, i / size.x);
     else if (rand.Chance(0.02))
       BlockPut("flower", i % size.x, i / size.x);
+    else if (rand.Chance(0.001))
+      BlockPut("wheat", i % size.x, i / size.x);
 
   // generate the trees
   for (int i = 0; i < size.Area(); i++)

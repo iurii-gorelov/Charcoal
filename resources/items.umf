@@ -22,9 +22,9 @@
 0/type: 0
 0/usetimer: 1
 
-# Wand 1
-1/name: "wand1"
-1/title: "CHARCOAL WAND"
+# Wooden Wand
+1/name: "woodenwand"
+1/title: "WOODEN WAND"
 1/type: 1
 1/usetimer: 16
 1/wand/damage: 1
@@ -72,3 +72,80 @@
 9/name: "stonebricks"
 9/title: "STONE BRICKS"
 9/type: 2
+
+# Hell Flesh
+10/name: "hellflesh"
+10/title: "HELL FLESH"
+10/type: 0
+
+# Stone Wand
+11/name: "stonewand"
+11/title: "STONE WAND"
+11/type: 1
+11/usetimer: 32
+11/wand/damage: 4
+11/wand/power: 6
+11/wand/projs: 1
+
+# Wheat Seeds
+12/name: "wheatseeds"
+12/title: "WHEAT SEEDS"
+12/type: 2
+
+# Wheat
+13/name: "wheat"
+13/title: "WHEAT"
+13/type: 0
+
+# Bread
+14/name: "bread"
+14/title: "BREAD"
+14/type: 3
+14/food: 2
+
+# Holy Flesh
+15/name: "holyflesh"
+15/title: "HOLY FLESH"
+15/type: 0
+
+# Priest Wand
+16/name: "priestwand"
+16/title: "PRIEST WAND"
+16/type: 1
+16/usetimer: 16
+16/wand/damage: 3
+16/wand/power: 6
+16/wand/projs: 0
+
+# Iron Bar
+17/name: "ironbar"
+17/title: "IRON BAR"
+17/type: 0
+
+# Gold Bar
+18/name: "goldbar"
+18/title: "GOLD BAR"
+18/type: 0
+
+# Iron Wand
+19/name: "ironwand"
+19/title: "IRON WAND"
+19/type: 1
+19/usetimer: 8
+19/wand/damage: 1
+19/wand/power: 12
+19/wand/projs: 1
+
+# Gold Wand
+20/name: "goldwand"
+20/title: "GOLD WAND"
+20/type: 1
+20/usetimer: 20
+20/wand/damage: 8
+20/wand/power: 16
+20/wand/projs: 1
+
+# Sapling
+21/name: "sapling"
+21/title: "SAPLING"
+21/type: 2

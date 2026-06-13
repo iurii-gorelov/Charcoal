@@ -57,6 +57,8 @@ static void Update(void) {
     cl::Write(display, bx + 2, by + 2);
   }
   else {
+    if (Game::curArea != nullptr)
+      Game::DeleteWorld();
     Game::CreateWorld(seed);
     Scene::Switch("Game");
   }

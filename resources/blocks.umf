@@ -28,7 +28,7 @@
 
 # Flower
 5/name: "flower"
-5/charinfo: "e6t"
+5/charinfo: "e3t"
 5/collision: "00"
 
 
@@ -37,7 +37,7 @@
 3/charinfo: "c2t"
 3/collision: "11"
 3/health: 5
-3/drop: "planks planks"
+3/drop: "planks planks sapling sapling"
 
 # Red Tree
 7/name: "redtree"
@@ -45,6 +45,13 @@
 7/collision: "11"
 7/health: 5
 7/drop: "planks planks apple"
+
+# Sapling
+16/name: "sapling"
+16/charinfo: "l4t"
+16/collision: "01"
+16/health: 1
+16/drop: "sapling"
 
 
 # Rock
@@ -70,7 +77,7 @@
 
 # Gold
 11/name: "gold"
-11/charinfo: "g6t"
+11/charinfo: "d6t"
 11/collision: "11"
 11/health: 30
 11/drop: "gold"
@@ -95,13 +102,27 @@
 12/name: "cobble"
 12/charinfo: "j87"
 12/collision: "11"
-12/health: 7
+12/health: 6
 12/drop: "cobble"
 
 # Stone Bricks
 13/name: "stonebricks"
 13/charinfo: "k87"
 13/collision: "11"
-13/health: 3
+13/health: 10
 13/drop: "stonebricks"
 13/toohard: 1
+
+# Wheat
+14/name: "wheat"
+14/charinfo: "zet"
+14/collision: "01"
+14/health: 1
+14/drop: "wheat"
+
+# Wheat Seeds
+15/name: "wheatseeds"
+15/charinfo: "y6t"
+15/collision: "01"
+15/health: 1
+15/drop: "wheatseeds"

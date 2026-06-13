@@ -19,6 +19,7 @@ umap<string, uchar> Info::Item::ids;
 // player's inventory
 vec<pair<uchar, uchar>> Game::inventory;
 uchar Game::selectedSlot;
+bool Game::gameOver = false;
 
 // forward
 static void RenderUI(void);
@@ -55,6 +56,13 @@ void Game::CreateWorld(int seed) {
   curArea->GenerateIsland();
   AddItem(1);
   curArea->player->SelectItem(0);
+}
+
+// delete the world
+void Game::DeleteWorld(void) {
+  curArea = nullptr;
+  inventory.clear();
+  selectedSlot = 0;
 }
 
 // renders all the ui

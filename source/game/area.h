@@ -7,6 +7,7 @@
 // constants
 #define DAY_LENGTH ((2 * 60 * 60))
 #define TIME_DAWN  ((10 * 60))
+#define RANDOM_PING_COUNT 1
 
 // block object
 struct Block {
@@ -27,7 +28,7 @@ class Area
 
     // current state
     v2s camera = {0, 0};
-    ulong time = 3600;
+    ulong time = 0;
     float lightScalar = 1;
     float lightCubed = 1;
     
@@ -201,6 +202,10 @@ class Area
       else if (daytime >= DAY_LENGTH / 2 && daytime < DAY_LENGTH / 2 + TIME_DAWN)
         lightScalar = 2 + 5 * (1 - scast<float>(daytime - DAY_LENGTH / 2) / TIME_DAWN);
 
+      // few random pings
+      for (int i = 0; i < RANDOM_PING_COUNT; i++)
+        RandomPing();
+
       // increment the time
       time++;
     }
@@ -263,6 +268,49 @@ class Area
             cl::AttrAt(x, y) =
               (Utils::decay[(cl::AttrAt(x, y) & 0xf0) >> 4] << 4) |
               (Utils::decay[cl::AttrAt(x, y) & 0x0f]);
+        }
+      }
+    }
+
+    // random ping
+    void RandomPing(void) 
+    {
+      // random position
+      int x = rand.Next(size.x);
+      int y = rand.Next(size.y);
+
+      // check if there is a block
+      if (Inside(v2s(x, y)) && (Info::blocks[blocks[x + y * size.x].id].entCol || Info::blocks[blocks[x + y * size.x].id].projCol)) {
+        auto& block = blocks[x + y * size.x];
+        auto& info = Info::blocks[block.id];
+        if (info.name == "wheatseeds")
+          block.id = Info::Block::ids["wheat"];
+        else if (info.name == "sapling")
+          block.id = rand.Chance(0.1) ? Info::Block::ids["redtree"] : Info::Block::ids["tree"];
+        return;
+      }
+
+      // there is no block, put a block
+      else if (entities.size() < 128)
+      {
+        // try to put an enemy
+        if (rand.Chance(0.1)) {
+          if (time > DAY_LENGTH / 2 && LightLevel(v2s(x, y)) == 0)
+            EntityAdd(new Enemy(this, v2s(x, y), "demon"));
+          return;
+        }
+
+        // try to put a dog
+        if (time < DAY_LENGTH / 2 && rand.Chance(0.2)) {
+          EntityAdd(new Enemy(this, v2s(x, y), "dog"));
+          return;
+        }
+
+        // try to put a priest
+        if (rand.Chance(0.03)) {
+          if (time > DAY_LENGTH / 2 && LightLevel(v2s(x, y)) == 0)
+            EntityAdd(new Enemy(this, v2s(x, y), "priest"));
+          return;
         }
       }
     }

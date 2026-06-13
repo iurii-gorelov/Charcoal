@@ -22,7 +22,7 @@ class Entity
     // properties
     v2s   pos;
     uchar id;
-    uchar health;
+    short health;
 
     // constructor
     virtual ~Entity() {}
@@ -84,6 +84,7 @@ class Player : public Entity
     ut::Timer moveTimer;
     ut::Timer useTimer;
     Light* light;
+    int maxHealth = 10;
 
   // public stuff
   public:
@@ -100,6 +101,25 @@ class Player : public Entity
     void SelectItem(int slot);
 };
 
+// enemy class
+class Enemy : public Entity
+{
+  // data
+  private:
+    ut::Timer moveTimer;
+    ut::Timer attackTimer;
+
+  // public
+  public:
+
+    // constructor
+    Enemy(Area* area, v2s pos, string name);
+
+    // override the behaviour
+    void Behave(void) override;
+    void Death(void) override;
+};
+
 // projectile class
 class Projectile : public Entity
 {
@@ -109,6 +129,7 @@ class Projectile : public Entity
     int power;
     v2s direction;
     Light* light;
+    bool players;
 
   // public
   public:
@@ -118,4 +139,5 @@ class Projectile : public Entity
 
     // override the behaviour
     void Behave(void) override;
+    void Death(void) override;
 };

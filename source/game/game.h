@@ -17,9 +17,13 @@ namespace Game
   // player's inventory
   extern vec<std::pair<uchar, uchar>> inventory;
   extern uchar selectedSlot;
+  extern bool gameOver;
 
   // create a new world
   void CreateWorld(int seed);
+  void DeleteWorld(void);
+
+  // item stuff
   void AddItem(uchar id);
   void RemoveItem(uchar id);
   pair<uchar, uchar>* GetItem(uchar id);

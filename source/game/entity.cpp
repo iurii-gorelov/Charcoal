@@ -15,10 +15,18 @@ void Entity::TryMove(int dirX, int dirY)
   if (pos.x + dirX < 0 || pos.x + dirX >= area->size.x || pos.y + dirY < 0 || pos.y + dirY >= area->size.y)
     return;
   
+  // target position
+  v2s tarPos = pos + v2s(dirX, dirY);
+
   // check collision
-  Block& block = area->blocks[pos.x + dirX + (pos.y + dirY) * area->size.x];
+  Block& block = area->blocks[tarPos.x + (tarPos.y) * area->size.x];
   if (Info::blocks[block.id].entCol)
     return;
+
+  // check all the entities
+  for (auto& entity : area->entities)
+    if (Info::entities[entity->id].collidable && entity->pos == tarPos)
+      return;
   
   // move
   pos.x += dirX;
@@ -90,9 +98,9 @@ void Player::SelectItem(int slot) {
 }
 
 // on death
-void Player::Death(void)
-{
-  // ...
+void Player::Death(void) {
+  Game::gameOver = true;
+  Scene::Switch("Menu");
 }
 
 // use item
@@ -122,7 +130,7 @@ void Player::UseItem(v2s dir)
   if (item.type == 2) {
     v2s targetPos = pos + dir;
     Block& slot = area->blocks[targetPos.x + targetPos.y * area->size.x];
-    if (Info::blocks[slot.id].entCol)
+    if (Info::blocks[slot.id].entCol || Info::blocks[slot.id].projCol)
       return;
     area->BlockPut(Info::Block::ids[Info::items[itemId].name], targetPos.x, targetPos.y);
     Game::RemoveItem(itemId);
@@ -131,31 +139,50 @@ void Player::UseItem(v2s dir)
   // item is food
   if (item.type == 3) {
     area->player->health += item.food;
+    if (area->player->health > area->player->maxHealth)
+      area->player->health = area->player->maxHealth;
     Game::RemoveItem(itemId);
   }
+}
+
+// projectile death
+void Projectile::Death(void) {
+  area->LightRemove(light);
+  area->EntityRemove(this);
 }
 
 // behaviour
 void Projectile::Behave(void)
 {
-  // only odd ticks
-  if (ut::ticks % 2)
-    return;
-
   // check if
   if (area->Inside(pos) && Info::blocks[area->blocks[pos.x + pos.y * area->size.x].id].projCol) {
-    area->BlockDamage(pos, 1);
-    area->LightRemove(light);
-    area->EntityRemove(this);
+    if (players)
+      area->BlockDamage(pos, health);
+    else if (area->blocks[pos.x + pos.y * area->size.x].hp <= health * 2)
+      area->BlockDamage(pos, health);
+    Death();
     return;
   }
 
   // remove if out of power
   else if (power <= 0) {
     area->LightRemove(light);
-    area->EntityRemove(this);
+    Death();
     return;
   }
+
+  // check all the entities
+  for (auto& entity : area->entities) {
+    if (entity->pos == pos && Info::entities[entity->id].collidable && entity.get() != owner) {
+      entity->ApplyDamage(health);
+      Death();
+      return;
+    }
+  }
+  
+  // only odd ticks
+  if (ut::ticks % 2)
+    return;
     
   // move
   pos = pos + direction;
@@ -186,5 +213,80 @@ Projectile::Projectile(Area* area, v2s pos, v2s dir, Entity* own, Info::Item& wa
   power(wand.wandPower),
   direction(dir) {
   health = wand.wandDamage;
+  players = wand.wandProjs;
   light = area->LightCreate(pos, 0);
+}
+
+// enemy constructor
+Enemy::Enemy(Area* area, v2s pos, string name)  :
+  Entity(area, pos, Info::Entity::ids[name]),
+  moveTimer(8),
+  attackTimer(name == "priest" ? 64 : 16) {
+  Info::Entity& info = Info::entities[id];
+  health = info.hp;
+  moveTimer = ut::Timer(info.speed);
+}
+
+// behaviour
+void Enemy::Behave(void)
+{
+  // remove if too far
+  
+  int dist = 64 * 64;
+  if (area->time < DAY_LENGTH / 2)
+    dist = 32 * 32;
+  if ((pos - area->player->pos).LengthSq() > dist) {
+    area->EntityRemove(this);
+    return;
+  }
+
+  // info
+  Info::Entity& info = Info::entities[id];
+  v2s dir = (area->player->pos - pos).Normalize();
+
+  // try to move toward player
+  if (moveTimer.Check())
+  {
+    // move
+    if (info.name == "demon" || info.name == "priest") {
+      TryMove(dir.x, 0);
+      TryMove(0, dir.y);
+      moveTimer.Reset();
+    }
+
+    // passive
+    if (info.name == "dog") {
+      if (area->rand.Chance(0.01)) {
+        dir = area->rand.SqrPos(1);
+        TryMove(dir.x, 0);
+        TryMove(0, dir.y);
+        moveTimer.Reset();
+      }
+    }
+  }
+
+  // try to attack
+  if (attackTimer.Check())
+  {
+    // melee attack
+    if (info.name == "demon") {
+      if (area->player->pos == pos + dir) {
+        area->player->ApplyDamage(info.damage);
+        attackTimer.Reset();
+      }
+    }
+
+    // ranged attack
+    if (info.name == "priest") {
+      area->EntityAdd(new Projectile(area, pos, dir, this, Info::items[Info::Item::ids["priestwand"]]));
+      attackTimer.Reset();
+    }
+  }
+}
+
+// death
+void Enemy::Death(void) {
+  if (Info::entities[id].drop != "")
+    area->EntityAdd(new Drop(area, pos, Info::entities[id].drop));
+  area->EntityRemove(this);
 }

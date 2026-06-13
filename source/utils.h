@@ -16,6 +16,11 @@ struct v2s
   int Area(void) { return x * y; }
   double Length(void) { return std::sqrt(x * x + y * y); }
   double LengthSq(void) { return x * x + y * y; }
+  v2s Normalize(void) {
+    return v2s(
+      x == 0 ? 0 : x > 0 ? 1 : -1,
+      y == 0 ? 0 : y > 0 ? 1 : -1);
+  }
 
   // operators
   v2s operator+(v2s other)
@@ -26,7 +31,7 @@ struct v2s
     { return v2s(x * scalar, y * scalar); }
 
   // comparison
-  bool operator==(v2s& other)
+  bool operator==(v2s other)
     { return x == other.x && y == other.y; }
 };
 
